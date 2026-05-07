@@ -32,18 +32,24 @@ async function searchProfessor(lastName, firstInitial) {
   const stored = await chrome.storage.session.get(cacheKey);
   if (cacheKey in stored) return stored[cacheKey];
 
-  const data = await rmpFetch(`{
-    newSearch {
-      teachers(query: {text: "${lastName}", schoolID: "${USF_ID}"}) {
-        edges {
-          node {
-            id firstName lastName department
-            avgRating avgDifficulty wouldTakeAgainPercent numRatings
+  let data;
+  try {
+    data = await rmpFetch(`{
+      newSearch {
+        teachers(query: {text: "${lastName}", schoolID: "${USF_ID}"}) {
+          edges {
+            node {
+              id firstName lastName department
+              avgRating avgDifficulty wouldTakeAgainPercent numRatings
+            }
           }
         }
       }
-    }
-  }`);
+    }`);
+  } catch (err) {
+    console.error("[RMP] fetch failed:", err.message, err);
+    return null;
+  }
 
   const edges = data?.data?.newSearch?.teachers?.edges ?? [];
   const professors = edges.map((e) => e.node);
