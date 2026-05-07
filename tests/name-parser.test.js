@@ -42,4 +42,5 @@ test('handles full first name instead of initial', () => {
   expect(result).not.toBeNull();
   expect(result.lastName).toBe('Johnson');
   expect(result.firstInitial).toBe('M');
+  expect(result.searchName).toBe('Johnson M');
 });

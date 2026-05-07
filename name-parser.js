@@ -19,8 +19,10 @@ function parseInstructorCell(text) {
   const firstPart = match[2].trim();
 
   // Extract first initial from firstPart
-  // If it's already a single letter, use it; otherwise take first letter of first name
-  const firstInitial = firstPart.length === 1 ? firstPart : firstPart[0];
+  // Validate that it's alphabetic and uppercase
+  const initialMatch = firstPart.match(/^([A-Za-z])/);
+  if (!initialMatch) return null;
+  const firstInitial = initialMatch[1].toUpperCase();
 
   return {
     lastName,
