@@ -1,8 +1,10 @@
 const RMP_URL = "https://www.ratemyprofessors.com/graphql";
 const USF_ID = "U2Nob29sLTEyNjI=";
+// text/plain avoids CORS preflight (no OPTIONS request sent by browser).
+// Authorization header is also omitted — it's a non-simple header that
+// forces a preflight, and the RMP API doesn't require it.
 const HEADERS = {
-  "Authorization": "Basic dGVzdDp0ZXN0",
-  "Content-Type": "application/json",
+  "Content-Type": "text/plain",
 };
 
 async function rmpFetch(query) {
