@@ -47,14 +47,15 @@ async function searchProfessor(lastName, firstInitial) {
     }
   }`);
 
-  const professors = data.data.newSearch.teachers.edges.map((e) => e.node);
+  const edges = data?.data?.newSearch?.teachers?.edges ?? [];
+  const professors = edges.map((e) => e.node);
 
   // Prefer exact last name + first initial match; fall back to last name only
   const match =
     professors.find(
       (p) =>
         p.lastName.toLowerCase() === lastName.toLowerCase() &&
-        p.firstName[0].toUpperCase() === firstInitial.toUpperCase()
+        p.firstName?.[0]?.toUpperCase() === firstInitial.toUpperCase()
     ) ||
     professors.find((p) => p.lastName.toLowerCase() === lastName.toLowerCase());
 
