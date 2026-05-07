@@ -57,24 +57,27 @@ function processElement(element) {
 }
 
 function scanPage() {
-  // Walk all text nodes looking for instructor pattern
-  // More robust than guessing Banner's CSS selectors
+  // Banner renders displayName ("Cainas, J.") as a link and "(Primary)" as a
+  // separate text node — so we can't match both in a single text node.
+  // Instead: find "(Primary)" text nodes, walk up to the TD, process the TD
+  // whose full textContent gives us the combined "Cainas, J. (Primary)" string.
+  const seen = new Set();
   const walker = document.createTreeWalker(
     document.body,
     NodeFilter.SHOW_TEXT,
     null
   );
-
   let node;
   while ((node = walker.nextNode())) {
-    const text = node.textContent.trim();
-    // Must match "LastName, F." pattern AND contain "(Primary)" to avoid false positives
-    if (/^[A-Z][^,]+,\s*[A-Z]/.test(text) && text.includes("(Primary)")) {
-      const parent = node.parentElement;
-      if (parent && !parent.hasAttribute(BADGE_ATTR)) {
-        processElement(parent);
-      }
+    const t = node.textContent;
+    if (!t.includes("(Primary)") && !t.includes("(Secondary)")) continue;
+    let el = node.parentElement;
+    while (el && el.tagName !== "TD" && el !== document.body) {
+      el = el.parentElement;
     }
+    if (!el || el.tagName !== "TD" || seen.has(el)) continue;
+    seen.add(el);
+    processElement(el);
   }
 }
 
