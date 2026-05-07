@@ -3,8 +3,6 @@ const USF_ID = "U2Nob29sLTEyNjI=";
 const HEADERS = {
   "Authorization": "Basic dGVzdDp0ZXN0",
   "Content-Type": "application/json",
-  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-  "Referer": "https://www.ratemyprofessors.com/",
 };
 
 async function rmpFetch(query) {
