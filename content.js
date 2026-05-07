@@ -1,0 +1,82 @@
+// name-parser.js is loaded before this file (see manifest content_scripts array)
+// parseInstructorCell() is available as a global
+
+const BADGE_ATTR = "data-rmp-badge";
+
+function ratingClass(rating) {
+  if (!rating) return "rmp-badge--none";
+  if (rating >= 4.0) return "rmp-badge--good";
+  if (rating >= 3.0) return "rmp-badge--ok";
+  return "rmp-badge--bad";
+}
+
+function injectBadge(element, data) {
+  if (!data) {
+    const badge = document.createElement("span");
+    badge.className = "rmp-badge rmp-badge--none";
+    badge.textContent = "No RMP data";
+    element.appendChild(document.createElement("br"));
+    element.appendChild(badge);
+    return;
+  }
+
+  const againText =
+    data.wouldTakeAgainPct > 0 ? ` · ${data.wouldTakeAgainPct}% again` : "";
+
+  const badge = document.createElement("a");
+  badge.href = data.rmpUrl;
+  badge.target = "_blank";
+  badge.rel = "noopener noreferrer";
+  badge.className = `rmp-badge ${ratingClass(data.rating)}`;
+  badge.textContent = `⭐ ${data.rating} · diff ${data.difficulty}${againText}`;
+  badge.title = `${data.name} — ${data.numRatings} ratings on Rate My Professors`;
+
+  element.appendChild(document.createElement("br"));
+  element.appendChild(badge);
+}
+
+function processElement(element) {
+  if (element.hasAttribute(BADGE_ATTR)) return;
+  const text = element.textContent.trim();
+  const parsed = parseInstructorCell(text);
+  if (!parsed) return;
+
+  element.setAttribute(BADGE_ATTR, "pending");
+
+  chrome.runtime.sendMessage(
+    { action: "getRating", lastName: parsed.lastName, firstInitial: parsed.firstInitial },
+    (result) => {
+      injectBadge(element, result || null);
+      element.setAttribute(BADGE_ATTR, "done");
+    }
+  );
+}
+
+function scanPage() {
+  // Walk all text nodes looking for instructor pattern
+  // More robust than guessing Banner's CSS selectors
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    null
+  );
+
+  let node;
+  while ((node = walker.nextNode())) {
+    const text = node.textContent.trim();
+    // Must match "LastName, F." pattern AND contain "(Primary)" to avoid false positives
+    if (/^[A-Z][^,]+,\s*[A-Z]/.test(text) && text.includes("(Primary)")) {
+      const parent = node.parentElement;
+      if (parent && !parent.hasAttribute(BADGE_ATTR)) {
+        processElement(parent);
+      }
+    }
+  }
+}
+
+// Initial scan after DOM is ready
+scanPage();
+
+// Watch for dynamic table loads (Banner uses AJAX for course search results)
+const observer = new MutationObserver(() => scanPage());
+observer.observe(document.body, { childList: true, subtree: true });

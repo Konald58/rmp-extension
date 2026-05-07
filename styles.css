@@ -1,0 +1,22 @@
+.rmp-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 3px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.rmp-badge:hover {
+  opacity: 0.85;
+  text-decoration: underline;
+}
+
+/* Rating tiers */
+.rmp-badge--good { background: #006747; color: #fff; }   /* USF green — 4.0+ */
+.rmp-badge--ok   { background: #CFC493; color: #333; }   /* USF gold  — 3.0–3.9 */
+.rmp-badge--bad  { background: #c0392b; color: #fff; }   /* red       — <3.0 */
+.rmp-badge--none { background: #888;    color: #fff; }   /* no RMP data */
