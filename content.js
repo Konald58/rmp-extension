@@ -4,7 +4,7 @@
 const BADGE_ATTR = "data-rmp-badge";
 
 function ratingClass(rating) {
-  if (!rating) return "rmp-badge--none";
+  if (rating == null) return "rmp-badge--none";
   if (rating >= 4.0) return "rmp-badge--good";
   if (rating >= 3.0) return "rmp-badge--ok";
   return "rmp-badge--bad";
@@ -46,6 +46,10 @@ function processElement(element) {
   chrome.runtime.sendMessage(
     { action: "getRating", lastName: parsed.lastName, firstInitial: parsed.firstInitial },
     (result) => {
+      if (chrome.runtime.lastError) {
+        element.removeAttribute(BADGE_ATTR);
+        return;
+      }
       injectBadge(element, result || null);
       element.setAttribute(BADGE_ATTR, "done");
     }
@@ -78,5 +82,10 @@ function scanPage() {
 scanPage();
 
 // Watch for dynamic table loads (Banner uses AJAX for course search results)
-const observer = new MutationObserver(() => scanPage());
+// Debounced to avoid re-scanning on every badge injection
+let scanTimer = null;
+const observer = new MutationObserver(() => {
+  clearTimeout(scanTimer);
+  scanTimer = setTimeout(scanPage, 150);
+});
 observer.observe(document.body, { childList: true, subtree: true });
