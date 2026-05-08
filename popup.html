@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>RMP Ratings</title>
+    <title>Professor Ratings</title>
     <style>
       :root {
-        --usf-green: #006747;
-        --usf-gold: #cfc493;
+        --accent: #2d6a4f;
+        --accent-light: #d8e8e1;
         --text: #1a1a1a;
         --muted: #6b6b6b;
         --border: #e3e3e3;
@@ -52,7 +52,7 @@
       }
       select:focus, input:focus {
         outline: none;
-        border-color: var(--usf-green);
+        border-color: var(--accent);
       }
       .field { margin-bottom: 12px; }
       .row { display: flex; gap: 8px; }
@@ -62,7 +62,7 @@
         padding: 8px 12px;
         border: 0;
         border-radius: 5px;
-        background: var(--usf-green);
+        background: var(--accent);
         color: #fff;
         font-size: 13px;
         font-weight: 600;
@@ -75,7 +75,7 @@
         border-radius: 5px;
         font-size: 12px;
         background: #f4f8f6;
-        color: var(--usf-green);
+        color: var(--accent);
         display: none;
       }
       .status.error { background: #fbecea; color: #c0392b; }
@@ -88,7 +88,7 @@
         color: var(--muted);
         line-height: 1.45;
       }
-      a { color: var(--usf-green); text-decoration: none; }
+      a { color: var(--accent); text-decoration: none; }
       a:hover { text-decoration: underline; }
     </style>
   </head>

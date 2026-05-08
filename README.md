@@ -2,9 +2,7 @@
 
 A Chrome extension that injects [Rate My Professors](https://www.ratemyprofessors.com) ratings inline on Ellucian Banner SSB9 course registration pages.
 
-Used by ~1,400 universities, including USF, UF, FSU, UCF, FIU, Penn State, Texas A&M, and many others.
-
-![Badge example](docs/screenshot-search.png)
+Works at ~1,400 universities that run Ellucian Banner SSB9, including USF, UF, FSU, UCF, FIU, Penn State, Texas A&M, and many others.
 
 ## What it does
 
@@ -47,7 +45,7 @@ Selection syncs across devices when signed into Chrome.
 - **`background.js`** (service worker) handles all RMP GraphQL fetches — service workers bypass CORS so the required `Authorization` header can be sent
 - **`name-parser.js`** extracts last name + first initial from common Banner formats (incl. multi-word last names like "De La Cruz")
 - **`popup.html` / `popup.js`** lets the user pick a school; setting saved to `chrome.storage.sync`
-- Container queries in CSS adapt the card layout to the cell width
+- CSS grid adapts the card layout to the cell width
 
 Tests for the parser live under `tests/`. Run with `npm test`.
 
