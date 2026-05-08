@@ -1,22 +1,84 @@
-.rmp-badge {
-  display: inline-block;
-  padding: 2px 7px;
-  border-radius: 3px;
-  font-size: 11px;
-  font-weight: 600;
+.rmp-container {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ===== Card: white background, dark text, single tier-colored bar at bottom ===== */
+.rmp-card {
+  display: block;
+  padding: 7px 10px 8px;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #2b2b2b;
   text-decoration: none;
-  margin-top: 3px;
-  cursor: pointer;
-  transition: opacity 0.15s;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+.rmp-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  border-color: #cfcfcf;
+  text-decoration: none;
 }
 
-.rmp-badge:hover {
-  opacity: 0.85;
-  text-decoration: underline;
+.rmp-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
 }
 
-/* Rating tiers */
-.rmp-badge--good { background: #006747; color: #fff; }   /* USF green — 4.0+ */
-.rmp-badge--ok   { background: #CFC493; color: #333; }   /* USF gold  — 3.0–3.9 */
-.rmp-badge--bad  { background: #c0392b; color: #fff; }   /* red       — <3.0 */
-.rmp-badge--none { background: #888;    color: #fff; }   /* no RMP data */
+.rmp-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+.rmp-col__value {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #1a1a1a;
+}
+.rmp-col__label {
+  margin-top: 2px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #888;
+  line-height: 1;
+}
+
+/* Single big bar under the row */
+.rmp-bar {
+  width: 100%;
+  height: 5px;
+  margin-top: 7px;
+  border-radius: 3px;
+  background: #ececec;
+  overflow: hidden;
+}
+.rmp-bar__fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Tier colors apply only to the fill */
+.rmp-card--good .rmp-bar__fill { background: #006747; } /* USF green */
+.rmp-card--ok   .rmp-bar__fill { background: #CFC493; } /* USF gold  */
+.rmp-card--bad  .rmp-bar__fill { background: #c0392b; } /* red       */
+
+/* Empty state */
+.rmp-empty {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #f1f1f1;
+  color: #666;
+  font-size: 11px;
+  font-weight: 500;
+}

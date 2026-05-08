@@ -2,105 +2,111 @@
 // parseInstructorCell() is available as a global
 
 const BADGE_ATTR = "data-rmp-badge";
-const RMP_URL = "https://www.ratemyprofessors.com/graphql";
-const USF_ID = "U2Nob29sLTEyNjI=";
 
 // In-memory cache per page load — avoids duplicate RMP calls for same professor
 const rmpCache = new Map();
-
-function professorUrl(id) {
-  try {
-    const numeric = atob(id).split("-").pop();
-    return `https://www.ratemyprofessors.com/professor/${numeric}`;
-  } catch {
-    return "https://www.ratemyprofessors.com";
-  }
-}
 
 async function searchProfessor(lastName, firstInitial) {
   const key = `${lastName}_${firstInitial}`.toLowerCase();
   if (rmpCache.has(key)) return rmpCache.get(key);
 
-  // Mark in-flight to prevent duplicate requests for same professor
-  rmpCache.set(key, null);
-
-  const query = `{ newSearch { teachers(query: {text: "${lastName}", schoolID: "${USF_ID}"}) { edges { node { id firstName lastName department avgRating avgDifficulty wouldTakeAgainPercent numRatings } } } } }`;
-
-  let data;
-  try {
-    const resp = await fetch(RMP_URL, {
-      method: "POST",
-      // text/plain avoids CORS preflight; content scripts with host_permissions
-      // bypass CORS so no Access-Control-Allow-Origin header is required.
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify({ query }),
-    });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    data = await resp.json();
-  } catch (err) {
-    console.error("[RMP] fetch failed:", err.message);
-    return null;
-  }
-
-  const edges = data?.data?.newSearch?.teachers?.edges ?? [];
-  const professors = edges.map((e) => e.node);
-
-  const match =
-    professors.find(
-      (p) =>
-        p.lastName.toLowerCase() === lastName.toLowerCase() &&
-        p.firstName?.[0]?.toUpperCase() === firstInitial.toUpperCase()
-    ) || professors.find((p) => p.lastName.toLowerCase() === lastName.toLowerCase());
-
-  const result = match
-    ? {
-        name: `${match.firstName} ${match.lastName}`,
-        rating: match.avgRating,
-        difficulty: match.avgDifficulty,
-        wouldTakeAgainPct: Math.round(match.wouldTakeAgainPercent || 0),
-        numRatings: match.numRatings,
-        rmpUrl: professorUrl(match.id),
+  const promise = chrome.runtime
+    .sendMessage({ type: "rmp:search", lastName, firstInitial })
+    .then((resp) => {
+      if (resp?.error) {
+        console.error("[RMP] background error:", resp.error);
+        return null;
       }
-    : null;
+      return resp?.result ?? null;
+    })
+    .catch((err) => {
+      console.error("[RMP] message failed:", err.message);
+      return null;
+    });
 
-  rmpCache.set(key, result);
-  return result;
+  rmpCache.set(key, promise);
+  return promise;
 }
 
-function ratingClass(rating) {
-  if (rating == null) return "rmp-badge--none";
-  if (rating >= 4.0) return "rmp-badge--good";
-  if (rating >= 3.0) return "rmp-badge--ok";
-  return "rmp-badge--bad";
+function ratingTier(rating) {
+  if (rating == null) return "none";
+  if (rating >= 4.0) return "good";
+  if (rating >= 3.0) return "ok";
+  return "bad";
+}
+
+function makeCol(label, value) {
+  const col = document.createElement("div");
+  col.className = "rmp-col";
+
+  const valueEl = document.createElement("span");
+  valueEl.className = "rmp-col__value";
+  valueEl.textContent = value;
+
+  const labelEl = document.createElement("span");
+  labelEl.className = "rmp-col__label";
+  labelEl.textContent = label;
+
+  col.appendChild(valueEl);
+  col.appendChild(labelEl);
+  return col;
 }
 
 function injectBadge(element, data) {
+  const wrap = document.createElement("div");
+  wrap.className = "rmp-container";
+
   if (!data) {
-    const badge = document.createElement("span");
-    badge.className = "rmp-badge rmp-badge--none";
-    badge.textContent = "No RMP data";
-    element.appendChild(document.createElement("br"));
-    element.appendChild(badge);
+    const empty = document.createElement("span");
+    empty.className = "rmp-empty";
+    empty.textContent = "No RMP data";
+    wrap.appendChild(empty);
+    element.appendChild(wrap);
     return;
   }
 
-  const againText = data.wouldTakeAgainPct > 0 ? ` · ${data.wouldTakeAgainPct}% again` : "";
-  const badge = document.createElement("a");
-  badge.href = data.rmpUrl;
-  badge.target = "_blank";
-  badge.rel = "noopener noreferrer";
-  badge.className = `rmp-badge ${ratingClass(data.rating)}`;
-  badge.textContent = `⭐ ${data.rating} · diff ${data.difficulty}${againText}`;
-  badge.title = `${data.name} — ${data.numRatings} ratings on Rate My Professors`;
-  element.appendChild(document.createElement("br"));
-  element.appendChild(badge);
+  const tier = ratingTier(data.rating);
+  const tooltip =
+    `${data.name} — ${data.numRatings} ratings on Rate My Professors\n` +
+    `Rating: ${data.rating}/5  ·  Difficulty: ${data.difficulty}/5` +
+    (data.wouldTakeAgainPct > 0 ? `  ·  Would take again: ${data.wouldTakeAgainPct}%` : "");
+
+  const card = document.createElement("a");
+  card.href = data.rmpUrl;
+  card.target = "_blank";
+  card.rel = "noopener noreferrer";
+  card.className = `rmp-card rmp-card--${tier}`;
+  card.title = tooltip;
+
+  const row = document.createElement("div");
+  row.className = "rmp-row";
+  row.appendChild(makeCol("Rating", data.rating.toFixed(1)));
+  row.appendChild(makeCol("Diff", data.difficulty.toFixed(1)));
+  if (data.wouldTakeAgainPct > 0) {
+    row.appendChild(makeCol("Retake", `${data.wouldTakeAgainPct}%`));
+  }
+
+  const bar = document.createElement("div");
+  bar.className = "rmp-bar";
+  const fill = document.createElement("div");
+  fill.className = "rmp-bar__fill";
+  // Rating scale is 1–5 (1 = minimum), so normalize to (rating - 1) / 4
+  const ratingPct = Math.max(0, Math.min(100, ((data.rating - 1) / 4) * 100));
+  fill.style.width = `${ratingPct}%`;
+  bar.appendChild(fill);
+
+  card.appendChild(row);
+  card.appendChild(bar);
+  wrap.appendChild(card);
+  element.appendChild(wrap);
 }
 
-function processElement(element) {
+function processElement(element, parsed) {
   if (element.hasAttribute(BADGE_ATTR)) return;
-  const text = element.textContent.trim();
-  const parsed = parseInstructorCell(text);
-  if (!parsed) return;
+  if (!parsed) {
+    parsed = parseInstructorCell(element.textContent);
+    if (!parsed) return;
+  }
 
   element.setAttribute(BADGE_ATTR, "pending");
 
@@ -111,22 +117,31 @@ function processElement(element) {
 }
 
 function scanPage() {
-  // Banner renders displayName ("Cainas, J.") as a link and "(Primary)" as a
-  // separate text node — so we can't match both in a single text node.
-  // Find "(Primary)" text nodes, walk up to the TD, use its full textContent.
+  // Find every text node containing "(Primary)" or "(Secondary)", then walk up
+  // to the smallest ancestor whose textContent contains the full instructor
+  // pattern. Works for both:
+  //   - Search results table cells (TDs)
+  //   - Schedule Details inline blocks ("Instructor: Williams, J. (Primary)")
   const seen = new Set();
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
   let node;
   while ((node = walker.nextNode())) {
     const t = node.textContent;
     if (!t.includes("(Primary)") && !t.includes("(Secondary)")) continue;
-    let el = node.parentElement;
-    while (el && el.tagName !== "TD" && el !== document.body) {
-      el = el.parentElement;
+
+    let container = node.parentElement;
+    let parsed = null;
+    let depth = 0;
+    while (container && container !== document.body && depth < 6) {
+      parsed = parseInstructorCell(container.textContent);
+      if (parsed) break;
+      container = container.parentElement;
+      depth++;
     }
-    if (!el || el.tagName !== "TD" || seen.has(el)) continue;
-    seen.add(el);
-    processElement(el);
+
+    if (!parsed || !container || seen.has(container)) continue;
+    seen.add(container);
+    processElement(container, parsed);
   }
 }
 

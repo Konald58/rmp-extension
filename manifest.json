@@ -1,11 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "USF Professor Ratings",
-  "version": "1.0.0",
-  "description": "Inline RMP ratings in USF Banner course registration",
+  "name": "Professor Ratings for Banner",
+  "version": "1.1.0",
+  "description": "Inline Rate My Professor ratings on Banner SSB9 course registration pages",
   "permissions": ["storage"],
   "host_permissions": [
-    "https://studentssb9.it.usf.edu/*",
     "https://www.ratemyprofessors.com/*"
   ],
   "background": {
@@ -13,7 +12,11 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://studentssb9.it.usf.edu/*"],
+      "matches": [
+        "https://*/StudentRegistrationSsb/*",
+        "https://*/ssb/*classRegistration*",
+        "https://*/ssb/*scheduleDetails*"
+      ],
       "js": ["name-parser.js", "content.js"],
       "css": ["styles.css"],
       "run_at": "document_idle",
@@ -24,5 +27,13 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "RMP Ratings — choose school",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
   }
 }

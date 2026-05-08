@@ -1,33 +1,30 @@
 /**
- * Parse USF Banner instructor cell text.
- * Input:  "Cainas, J. (Primary)"
- * Output: { lastName: "Cainas", firstInitial: "J", isPrimary: true, searchName: "Cainas J" }
- * Returns null for TBA / empty / Staff placeholders.
+ * Parse Banner instructor reference from any text containing "Lastname, F. (Primary|Secondary)".
+ * Works for both:
+ *   - Search results cell:   "Cainas, J. (Primary)"
+ *   - Schedule Details line: "Instructor: Williams, J. (Primary) CRN: 91348"
+ * Returns null if no instructor pattern found, or if matched name is a placeholder.
  */
 function parseInstructorCell(text) {
   if (!text) return null;
 
-  // Check for TBA or Staff placeholders
-  if (text === 'TBA' || text.includes('(Staff)')) return null;
-
-  // Match pattern: LastName, FirstNameOrInitial (Primary/Secondary)
-  // This will capture multi-word last names like "De La Cruz"
-  const match = text.match(/^([^,]+),\s*(.+?)\s*\(/);
+  // Find Lastname (possibly multi-word, hyphenated, or accented), comma,
+  // first name/initial, then (Primary|Secondary). Anchored anywhere in text.
+  const match = text.match(
+    /([A-ZÀ-Ý][A-Za-zÀ-ÿ'\-]+(?:[ \-][A-Za-zÀ-ÿ'\-]+)*),\s*([A-Za-z])[A-Za-z]*\.?\s*\((Primary|Secondary)\)/
+  );
   if (!match) return null;
 
   const lastName = match[1].trim();
-  const firstPart = match[2].trim();
+  const firstInitial = match[2].toUpperCase();
 
-  // Extract first initial from firstPart
-  // Validate that it's alphabetic and uppercase
-  const initialMatch = firstPart.match(/^([A-Za-z])/);
-  if (!initialMatch) return null;
-  const firstInitial = initialMatch[1].toUpperCase();
+  // Reject placeholders
+  if (/^(staff|tba|tbd)$/i.test(lastName)) return null;
 
   return {
     lastName,
     firstInitial,
-    isPrimary: text.includes('(Primary)'),
+    isPrimary: match[3] === 'Primary',
     searchName: `${lastName} ${firstInitial}`,
   };
 }
