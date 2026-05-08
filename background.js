@@ -1,13 +1,10 @@
 // Service worker — handles all RMP GraphQL fetches.
-// Extension service workers with host_permissions bypass CORS, so we can
-// send the Authorization header that RMP's GraphQL endpoint requires.
+// Extension service workers with host_permissions bypass CORS.
 
 const RMP_URL = "https://www.ratemyprofessors.com/graphql";
 const DEFAULT_SCHOOL_GRAPHQL_ID = "U2Nob29sLTEyNjI="; // USF Tampa fallback
 const HEADERS = {
-  "Authorization": "Basic dGVzdDp0ZXN0",
   "Content-Type": "application/json",
-  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
   "Referer": "https://www.ratemyprofessors.com/",
 };
 
@@ -19,22 +16,32 @@ async function getSchoolGraphqlId() {
 function professorUrl(id) {
   try {
     const numeric = atob(id).split("-").pop();
+    if (!/^\d+$/.test(numeric)) return "https://www.ratemyprofessors.com";
     return `https://www.ratemyprofessors.com/professor/${numeric}`;
   } catch {
     return "https://www.ratemyprofessors.com";
   }
 }
 
+const SEARCH_QUERY = `
+  query TeacherSearch($text: String!, $schoolID: ID) {
+    newSearch {
+      teachers(query: { text: $text, schoolID: $schoolID }) {
+        edges { node { id firstName lastName department avgRating avgDifficulty wouldTakeAgainPercent numRatings } }
+      }
+    }
+  }
+`;
+
 async function searchProfessor(lastName, firstInitial) {
   const schoolGraphqlId = await getSchoolGraphqlId();
-  const query = `{ newSearch { teachers(query: {text: "${lastName}", schoolID: "${schoolGraphqlId}"}) { edges { node { id firstName lastName department avgRating avgDifficulty wouldTakeAgainPercent numRatings } } } } }`;
 
   let data;
   try {
     const resp = await fetch(RMP_URL, {
       method: "POST",
       headers: HEADERS,
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query: SEARCH_QUERY, variables: { text: lastName, schoolID: schoolGraphqlId } }),
     });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     data = await resp.json();

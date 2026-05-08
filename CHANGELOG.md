@@ -2,9 +2,14 @@
 
 ## [Unreleased]
 
-### Added
-- `README.md`, `LICENSE` (MIT), `PRIVACY.md`, `STORE_LISTING.md` for Chrome Web Store submission
-- `.gitignore` covering Node + macOS noise
+## [1.1.1] — 2026-05-08
+
+### Changed
+- GraphQL query now uses parameterized `variables` object — eliminates injection risk from DOM-sourced instructor names
+- Removed hardcoded `Authorization: Basic` header and spoofed `User-Agent` — RMP endpoint works without them
+- `professorUrl()` now validates decoded ID is numeric before constructing URL
+- `all_frames` set to `false` — content script no longer runs in sub-iframes
+- Added explicit `content_security_policy` to manifest (`script-src 'self'; object-src 'none'`)
 
 ## [1.1.0] — 2026-05-08
 
