@@ -42,7 +42,7 @@ Selection syncs across devices when signed into Chrome.
 ## How it works
 
 - **`content.js`** scans the page for `Lastname, F. (Primary|Secondary)` patterns and walks up to find the smallest containing element
-- **`background.js`** (service worker) handles all RMP GraphQL fetches — service workers bypass CORS so the required `Authorization` header can be sent
+- **`background.js`** (service worker) handles all RMP GraphQL fetches — service workers bypass CORS so requests to ratemyprofessors.com succeed from any Banner domain
 - **`name-parser.js`** extracts last name + first initial from common Banner formats (incl. multi-word last names like "De La Cruz")
 - **`popup.html` / `popup.js`** lets the user pick a school; setting saved to `chrome.storage.sync`
 - CSS grid adapts the card layout to the cell width
