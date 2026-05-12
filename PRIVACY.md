@@ -48,8 +48,8 @@ The extension queries Rate My Professors' public GraphQL endpoint. Your interact
 
 ## Source code
 
-This extension is open source. You can audit every line at: https://github.com/Konald58/usf-rmp-extension
+This extension is open source. You can audit every line at: https://github.com/Konald58/rmp-extension
 
 ## Contact
 
-Issues, questions, or concerns: https://github.com/Konald58/usf-rmp-extension/issues
+Issues, questions, or concerns: https://github.com/Konald58/rmp-extension/issues

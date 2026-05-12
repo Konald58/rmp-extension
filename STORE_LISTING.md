@@ -36,7 +36,7 @@ UNIVERSAL — PICK YOUR SCHOOL
 Pre-configured for USF (Tampa, St. Petersburg, Lakeland), University of Florida, Florida State, UCF, and FIU. For any other school, paste your Rate My Professors school URL once and you're set. About 1,400 universities run Banner SSB9.
 
 PRIVACY
-No tracking. No analytics. No accounts. The only thing this extension stores is your chosen school. Source code is open at github.com/Konald58/usf-rmp-extension.
+No tracking. No analytics. No accounts. The only thing this extension stores is your chosen school. Source code is open at github.com/Konald58/rmp-extension.
 
 DISCLAIMER
 This is an independent project, not affiliated with any university or with Rate My Professors. Ratings come from RMP and may be inaccurate, outdated, or unrepresentative. Use them as one input, not a verdict.
@@ -83,7 +83,7 @@ Banner SSB9 is hosted on different domains at every university (e.g. studentssb9
 ## Privacy policy URL
 
 ```
-https://Konald58.github.io/usf-rmp-extension/PRIVACY
+https://konald58.github.io/rmp-extension/PRIVACY
 ```
 (or wherever you host PRIVACY.md once GitHub Pages is enabled)
 
@@ -91,7 +91,7 @@ https://Konald58.github.io/usf-rmp-extension/PRIVACY
 
 Use your GitHub issues page:
 ```
-https://github.com/Konald58/usf-rmp-extension/issues
+https://github.com/Konald58/rmp-extension/issues
 ```
 
 ---
