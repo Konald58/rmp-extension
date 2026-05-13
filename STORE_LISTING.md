@@ -7,13 +7,13 @@ Copy/paste each section into the Web Store Developer Dashboard at submission tim
 ## Name (max 75 chars)
 
 ```
-Professor Ratings for Banner
+Professor Ratings for Course Search
 ```
 
 ## Short description (max 132 chars)
 
 ```
-See Rate My Professors ratings inline while picking classes on Banner SSB9. Works at USF, UF, FSU, and most schools using Banner.
+See Rate My Professors ratings inline on Banner, PeopleSoft, and other course registration systems — no extra clicks.
 ```
 
 ## Category
@@ -23,17 +23,20 @@ See Rate My Professors ratings inline while picking classes on Banner SSB9. Work
 ## Detailed description
 
 ```
-Professor Ratings for Banner injects Rate My Professors ratings directly into your Banner SSB9 course registration page — so you can compare instructors without leaving Banner.
+Professor Ratings for Course Search injects Rate My Professors ratings directly into your university's course registration page — so you can compare instructors without leaving the page or copy-pasting names into a new tab.
 
 WHAT YOU GET
 • Compact rating card on every instructor: rating, difficulty, would-take-again %
 • Color-coded by tier (green ≥ 4.0, gold 3.0–3.9, red < 3.0)
+• Hover a card to see the full rating distribution (Awesome → Awful)
 • Click any card to open the full RMP profile in a new tab
-• Works on the Find Classes search results AND the Schedule Details panel
-• Container-aware layout — the card fits whatever cell width Banner gives it
+• Searchable school picker — works at any of the ~1,400 schools listed on Rate My Professors
+• Smart matching: warns you when multiple professors share the same name so you can verify
 
-UNIVERSAL — PICK YOUR SCHOOL
-Pre-configured for USF (Tampa, St. Petersburg, Lakeland), University of Florida, Florida State, UCF, and FIU. For any other school, paste your Rate My Professors school URL once and you're set. About 1,400 universities run Banner SSB9.
+WORKS ON
+• Ellucian Banner SSB9 (USF, UF, FSU, UCF, FIU, Penn State, Texas A&M, and ~1,400 more)
+• Oracle PeopleSoft Campus Solutions Class Search (NAU, U Houston, FIU, Ohio State, SF State, and hundreds more)
+• Find Classes search results AND Schedule Details panel on supported systems
 
 PRIVACY
 No tracking. No analytics. No accounts. The only thing this extension stores is your chosen school. Source code is open at github.com/Konald58/rmp-extension.
@@ -45,7 +48,7 @@ This is an independent project, not affiliated with any university or with Rate 
 ## Single purpose (required)
 
 ```
-Display Rate My Professors ratings inline on Ellucian Banner SSB9 course registration pages so students can evaluate instructors during registration without leaving the page.
+Display Rate My Professors ratings inline on university course-registration pages (Ellucian Banner SSB9, Oracle PeopleSoft Campus Solutions) so students can evaluate instructors during registration without leaving the page.
 ```
 
 ## Permissions justifications
