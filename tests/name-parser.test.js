@@ -1,4 +1,4 @@
-const { parseInstructorCell } = require('../name-parser');
+const { parseInstructorCell } = require('../content/name-parser');
 
 test('parses standard instructor format', () => {
   expect(parseInstructorCell('Cainas, J. (Primary)')).toEqual({

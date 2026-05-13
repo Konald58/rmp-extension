@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Professor Ratings for Banner",
-  "version": "1.1.1",
-  "description": "Inline Rate My Professor ratings on Banner SSB9 course registration pages",
+  "name": "Professor Ratings for Course Search",
+  "version": "2.0.0",
+  "description": "Inline Rate My Professors ratings on Banner, PeopleSoft, and other course registration systems.",
   "permissions": ["storage"],
   "host_permissions": [
     "https://www.ratemyprofessors.com/*"
@@ -15,9 +15,16 @@
       "matches": [
         "https://*/StudentRegistrationSsb/*",
         "https://*/ssb/*classRegistration*",
-        "https://*/ssb/*scheduleDetails*"
+        "https://*/ssb/*scheduleDetails*",
+        "https://*/*COMMUNITY_ACCESS.CLASS_SEARCH.GBL*"
       ],
-      "js": ["name-parser.js", "content.js"],
+      "js": [
+        "content/name-parser.js",
+        "content/common.js",
+        "content/adapters/banner.js",
+        "content/adapters/peoplesoft.js",
+        "content/index.js"
+      ],
       "css": ["styles.css"],
       "run_at": "document_idle",
       "all_frames": false

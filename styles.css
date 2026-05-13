@@ -82,3 +82,190 @@
   font-size: 11px;
   font-weight: 500;
 }
+
+/* ===== Hover popover ===== */
+.rmp-popover {
+  position: absolute;
+  z-index: 2147483647;
+  width: 320px;
+  max-width: calc(100vw - 16px);
+  background: #ffffff;
+  color: #1a1a1a;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-2px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+  pointer-events: none;
+  padding: 12px 14px;
+}
+.rmp-popover--show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.rmp-pop__warn {
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: #fff4d6;
+  color: #7a5a00;
+  font-size: 11px;
+  line-height: 1.35;
+  border: 1px solid #f1e1a8;
+}
+@media (prefers-color-scheme: dark) {
+  .rmp-pop__warn {
+    background: #3a2e08;
+    color: #f5d77a;
+    border-color: #5a4612;
+  }
+}
+.rmp-pop__header {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.rmp-pop__name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+}
+.rmp-pop__subline {
+  font-size: 11px;
+  color: #6b6b6b;
+  margin-top: 1px;
+}
+.rmp-pop__headline {
+  margin-top: 6px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.rmp-pop__big-rating {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1;
+}
+.rmp-pop__slash {
+  font-size: 11px;
+  color: #888;
+  font-weight: 600;
+  margin-left: -4px;
+}
+.rmp-pop__wta {
+  font-size: 11px;
+  color: #2d6a4f;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.rmp-pop__loading {
+  padding: 8px 0;
+  color: #6b6b6b;
+  font-size: 11.5px;
+  font-style: italic;
+}
+
+.rmp-pop__dist {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.rmp-pop__dist-row {
+  display: grid;
+  grid-template-columns: 78px 1fr 22px;
+  align-items: center;
+  gap: 8px;
+}
+.rmp-pop__dist-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+}
+.rmp-pop__dist-num {
+  display: inline-block;
+  margin-left: 2px;
+  padding: 0 4px;
+  background: #f1f1f1;
+  color: #555;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.rmp-pop__dist-track {
+  height: 10px;
+  background: #f1f1f1;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.rmp-pop__dist-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+.rmp-pop__dist-fill--good { background: #006747; }
+.rmp-pop__dist-fill--ok   { background: #cfc493; }
+.rmp-pop__dist-fill--bad  { background: #c0392b; }
+.rmp-pop__dist-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: right;
+}
+
+.rmp-pop__footer {
+  display: block;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  font-size: 11px;
+  font-weight: 600;
+  color: #2d6a4f;
+  text-decoration: none;
+  text-align: right;
+}
+.rmp-pop__footer:hover { text-decoration: underline; }
+
+/* ===== Dark-mode support (auto-respects user OS preference) ===== */
+@media (prefers-color-scheme: dark) {
+  .rmp-card {
+    background: #1f2227;
+    color: #e6e6e6;
+    border-color: #353a42;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+  .rmp-card:hover { border-color: #4a525c; }
+  .rmp-col__value { color: #f3f3f3; }
+  .rmp-col__label { color: #9aa0a6; }
+  .rmp-bar { background: #2c3036; }
+  .rmp-empty { background: #2a2d33; color: #a0a4aa; }
+
+  .rmp-popover {
+    background: #1f2227;
+    color: #e6e6e6;
+    border-color: #353a42;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  }
+  .rmp-pop__header { border-bottom-color: #2c3036; }
+  .rmp-pop__name { color: #f3f3f3; }
+  .rmp-pop__subline { color: #9aa0a6; }
+  .rmp-pop__big-rating { color: #f3f3f3; }
+  .rmp-pop__slash { color: #9aa0a6; }
+  .rmp-pop__wta { color: #6cc499; }
+  .rmp-pop__loading { color: #9aa0a6; }
+  .rmp-pop__dist-label { color: #d0d3d7; }
+  .rmp-pop__dist-num { background: #2c3036; color: #b0b4ba; }
+  .rmp-pop__dist-track { background: #2c3036; }
+  .rmp-pop__dist-count { color: #f3f3f3; }
+  .rmp-pop__footer { border-top-color: #2c3036; color: #6cc499; }
+}

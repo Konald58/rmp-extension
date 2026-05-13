@@ -10,10 +10,11 @@
         --text: #1a1a1a;
         --muted: #6b6b6b;
         --border: #e3e3e3;
+        --hover: #f4f8f6;
       }
       * { box-sizing: border-box; }
       body {
-        width: 320px;
+        width: 340px;
         margin: 0;
         padding: 16px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -41,45 +42,78 @@
         color: var(--muted);
         margin-bottom: 4px;
       }
-      select, input {
+      input[type="text"] {
         width: 100%;
-        padding: 7px 9px;
+        padding: 8px 10px;
         border: 1px solid var(--border);
         border-radius: 5px;
         font-size: 13px;
         font-family: inherit;
         background: #fff;
       }
-      select:focus, input:focus {
+      input[type="text"]:focus {
         outline: none;
         border-color: var(--accent);
       }
       .field { margin-bottom: 12px; }
-      .row { display: flex; gap: 8px; }
-      .row > * { flex: 1; }
-      button {
-        width: 100%;
-        padding: 8px 12px;
-        border: 0;
+
+      .current {
+        padding: 8px 10px;
+        background: var(--accent-light);
         border-radius: 5px;
-        background: var(--accent);
-        color: #fff;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
+        font-size: 12px;
+        margin-bottom: 12px;
+        color: #14463a;
       }
-      button:hover { opacity: 0.92; }
+      .current strong { font-weight: 700; }
+      .current .meta { color: var(--muted); font-size: 11px; margin-top: 2px; display: block; }
+
+      .results {
+        max-height: 240px;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        margin-top: 6px;
+        display: none;
+      }
+      .results.show { display: block; }
+      .result-item {
+        padding: 8px 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background 0.1s;
+      }
+      .result-item:last-child { border-bottom: 0; }
+      .result-item:hover { background: var(--hover); }
+      .result-item .name { font-weight: 600; font-size: 13px; }
+      .result-item .meta { color: var(--muted); font-size: 11px; margin-top: 1px; }
+      .result-item .ratings-count {
+        float: right;
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+
+      .loader, .empty {
+        padding: 12px 10px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
       .status {
         margin-top: 10px;
         padding: 7px 10px;
         border-radius: 5px;
         font-size: 12px;
-        background: #f4f8f6;
+        background: var(--hover);
         color: var(--accent);
         display: none;
       }
       .status.error { background: #fbecea; color: #c0392b; }
       .status.show { display: block; }
+
       .disclaimer {
         margin-top: 14px;
         padding-top: 12px;
@@ -88,40 +122,39 @@
         color: var(--muted);
         line-height: 1.45;
       }
+      .footer-links {
+        margin-top: 8px;
+        font-size: 10.5px;
+        color: var(--muted);
+        text-align: right;
+      }
       a { color: var(--accent); text-decoration: none; }
       a:hover { text-decoration: underline; }
     </style>
   </head>
   <body>
     <h1>Professor Ratings</h1>
-    <p class="sub">Choose your school. Ratings come from Rate My Professors.</p>
+    <p class="sub">Pick your school. Type a name — works at any of the ~1,400 schools listed on Rate My Professors.</p>
+
+    <div id="current" class="current" style="display:none">
+      <strong id="currentName">—</strong>
+      <span id="currentMeta" class="meta"></span>
+    </div>
 
     <div class="field">
-      <label for="preset">Quick pick</label>
-      <select id="preset">
-        <option value="">— select a school —</option>
-        <option value="1262">University of South Florida (Tampa / Sarasota)</option>
-        <option value="4383">USF — St. Petersburg</option>
-        <option value="5122">USF — Lakeland</option>
-        <option value="1100">University of Florida</option>
-        <option value="1237">Florida State University</option>
-        <option value="1082">University of Central Florida</option>
-        <option value="1322">Florida International University</option>
-        <option value="custom">Other — paste RMP school URL</option>
-      </select>
+      <label for="search">Search school</label>
+      <input id="search" type="text" placeholder="e.g. South Florida, Penn State, UCLA…" autocomplete="off" />
+      <div id="results" class="results"></div>
     </div>
 
-    <div class="field" id="customField" style="display:none">
-      <label for="customUrl">RMP school URL</label>
-      <input id="customUrl" type="text" placeholder="https://www.ratemyprofessors.com/school/1262" />
-    </div>
-
-    <button id="save">Save</button>
     <div id="status" class="status"></div>
 
     <p class="disclaimer">
       Independent project. Not affiliated with any university or with Rate My Professors. Ratings may be inaccurate, outdated, or unrepresentative — use your judgment.
     </p>
+    <div class="footer-links">
+      <a id="reportLink" href="#" target="_blank" rel="noopener noreferrer">Report an issue or unsupported school</a>
+    </div>
 
     <script src="popup.js"></script>
   </body>

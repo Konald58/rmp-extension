@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f7456"/>
+      <stop offset="1" stop-color="#1f5640"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="512" height="512" rx="96" ry="96" fill="url(#bg)"/>
+  <!-- Five-pointed star, centered, slightly above midline to leave room for the rating bar -->
+  <path
+    d="M256 78
+       L309.6 188.6
+       L431.2 206.2
+       L343.4 291.6
+       L364.2 412.5
+       L256 355.5
+       L147.8 412.5
+       L168.6 291.6
+       L80.8 206.2
+       L202.4 188.6 Z"
+    fill="#ffffff"/>
+  <!-- Signature gold rating bar below the star, echoing the in-page badge design -->
+  <rect x="120" y="446" width="272" height="18" rx="9" ry="9" fill="rgba(255,255,255,0.18)"/>
+  <rect x="120" y="446" width="200" height="18" rx="9" ry="9" fill="#cfc493"/>
+</svg>
