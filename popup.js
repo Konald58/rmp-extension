@@ -132,20 +132,46 @@ searchInput.addEventListener("focus", () => {
   }
 });
 
-// Build a pre-filled GitHub Issues URL so users can report bad matches or
-// schools where badges don't render. Stays inside their browser — no external
-// reporting service, no telemetry.
-function buildReportUrl(school) {
+// Build report URLs for the two channels (email = primary for non-technical
+// users, GitHub Issues = secondary for technical reports). Both are pre-filled
+// with diagnostics so the user just describes the problem and sends.
+//
+// Email destination uses a DuckDuckGo Email Protection alias — strips trackers
+// and forwards to the developer's real inbox without exposing it.
+const REPORT_EMAIL = "konstantind@duck.com";
+const GITHUB_REPO = "Konald58/rmp-extension";
+
+function buildReportUrls(school) {
   const manifest = chrome.runtime.getManifest();
   const version = manifest.version;
   const ua = navigator.userAgent;
   const schoolLine = school?.schoolName
     ? `${school.schoolName} (RMP ID ${school.schoolId})`
     : "(none selected)";
-  const title = school?.schoolName
+  const titlePrefix = school?.schoolName
     ? `[${school.schoolName}] `
     : "[unsupported school] ";
-  const body = [
+  const subject = `${titlePrefix}Issue`;
+
+  // Plain-text body for email — newlines, no markdown.
+  const emailBody = [
+    "What happened?",
+    "(describe the issue — e.g. no ratings appear, wrong professor matched, badges overlap text…)",
+    "",
+    "Page URL (if applicable):",
+    "",
+    "--- Diagnostics (don't edit) ---",
+    `Extension version: ${version}`,
+    `Selected school: ${schoolLine}`,
+    `User agent: ${ua}`,
+  ].join("\n");
+  const mailto =
+    `mailto:${REPORT_EMAIL}` +
+    `?subject=${encodeURIComponent(subject)}` +
+    `&body=${encodeURIComponent(emailBody)}`;
+
+  // Markdown body for GitHub Issues — same diagnostics.
+  const githubBody = [
     "**What happened?**",
     "(describe the issue — e.g. no ratings appear, wrong professor matched, badges overlap text…)",
     "",
@@ -156,17 +182,22 @@ function buildReportUrl(school) {
     `- Selected school: ${schoolLine}`,
     `- User agent: ${ua}`,
   ].join("\n");
-  const params = new URLSearchParams({ title, body });
-  return `https://github.com/Konald58/rmp-extension/issues/new?${params.toString()}`;
+  const githubParams = new URLSearchParams({ title: subject, body: githubBody });
+  const github = `https://github.com/${GITHUB_REPO}/issues/new?${githubParams.toString()}`;
+
+  return { mailto, github };
 }
 
-async function refreshReportLink() {
-  const link = document.getElementById("reportLink");
-  if (!link) return;
+async function refreshReportLinks() {
+  const emailEl = document.getElementById("reportEmail");
+  const githubEl = document.getElementById("reportGithub");
+  if (!emailEl || !githubEl) return;
   const school = await chrome.storage.sync.get(["schoolId", "schoolName"]);
-  link.href = buildReportUrl(school);
+  const { mailto, github } = buildReportUrls(school);
+  emailEl.href = mailto;
+  githubEl.href = github;
 }
-refreshReportLink();
+refreshReportLinks();
 
 async function selectSchool(d) {
   await chrome.storage.sync.set({
@@ -179,5 +210,5 @@ async function selectSchool(d) {
   clearResults();
   searchInput.value = "";
   showStatus(`Saved — ${d.name}. Refresh your class search page to see ratings.`);
-  refreshReportLink();
+  refreshReportLinks();
 }

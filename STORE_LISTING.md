@@ -92,7 +92,12 @@ https://konald58.github.io/rmp-extension/PRIVACY
 
 ## Support email / website
 
-Use your GitHub issues page:
+Support email (DuckDuckGo alias forwarding to developer inbox — strips trackers, can be rotated):
+```
+konstantind@duck.com
+```
+
+Website / additional reporting channel (for technical reports):
 ```
 https://github.com/Konald58/rmp-extension/issues
 ```
