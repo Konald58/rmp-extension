@@ -40,7 +40,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "RMP Ratings — choose school",
+    "default_title": "Professor Ratings — choose school",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png"
