@@ -62,6 +62,7 @@ const FAKE_PROFS = {
 function stubChrome() {
   global.chrome = {
     runtime: {
+      id: "fake-extension-id-for-tests",
       sendMessage: jest.fn(async (msg) => {
         if (msg.type === "rmp:search") {
           const prof = FAKE_PROFS[msg.lastName];
@@ -197,5 +198,67 @@ describe("PeopleSoft adapter full flow (NAU fixture)", () => {
     }
     // Fixture has TBA cells; if we got here, fixture changed
     throw new Error("No 'To be Announced' cell in fixture — assert needs update");
+  });
+});
+
+describe("orphaned content script context (extension reload while page open)", () => {
+  test("searchProfessor returns null instead of throwing when chrome.runtime is undefined", async () => {
+    // Re-load common.js into a fresh scope where chrome.runtime is missing —
+    // simulates the "extension was reloaded; content script is orphaned"
+    // state where chrome.runtime.id becomes undefined.
+    const fs = require("fs");
+    const path = require("path");
+    const text = fs.readFileSync(
+      path.join(__dirname, "..", "content/common.js"),
+      "utf8"
+    );
+
+    // Reset window.RMP and stub chrome with no runtime
+    delete window.RMP;
+    const origChrome = global.chrome;
+    global.chrome = {}; // No runtime property — mimics orphaned context
+
+    eval.call(globalThis, text);
+
+    // The IPC call must NOT throw — it should return a resolved-null Promise.
+    let result;
+    let threw = false;
+    try {
+      result = await window.RMP.searchProfessor("Mitchell", "K", "ACC", "Kenneth");
+    } catch {
+      threw = true;
+    }
+    expect(threw).toBe(false);
+    expect(result).toBeNull();
+
+    // Restore for any later tests
+    global.chrome = origChrome;
+  });
+
+  test("fetchDetails returns null instead of throwing when chrome.runtime is undefined", async () => {
+    const fs = require("fs");
+    const path = require("path");
+    const text = fs.readFileSync(
+      path.join(__dirname, "..", "content/common.js"),
+      "utf8"
+    );
+
+    delete window.RMP;
+    const origChrome = global.chrome;
+    global.chrome = {};
+
+    eval.call(globalThis, text);
+
+    let threw = false;
+    let result;
+    try {
+      result = await window.RMP.fetchDetails("VGVhY2hlci0xMjM=");
+    } catch {
+      threw = true;
+    }
+    expect(threw).toBe(false);
+    expect(result).toBeNull();
+
+    global.chrome = origChrome;
   });
 });

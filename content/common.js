@@ -11,12 +11,32 @@
   const profCache = new Map();
   const detailsCache = new Map();
 
+  // Returns true if the extension context is still alive. When the user
+  // reloads the extension (or it auto-updates) while a registration page is
+  // open, this content script becomes "orphaned": it keeps running but
+  // `chrome.runtime` goes undefined, so any `.sendMessage` call throws a
+  // synchronous TypeError before the .then/.catch can intercept it. Guard
+  // before every IPC.
+  function isContextAlive() {
+    try {
+      return !!chrome?.runtime?.id;
+    } catch {
+      return false;
+    }
+  }
+
   RMP.searchProfessor = function searchProfessor(lastName, firstInitial, subject, firstName) {
     // Cache by (name + initial + firstName + subject). PeopleSoft gives full
     // first names so "Kenneth" vs "Kimberly" both have lastName=Mitchell and
     // firstInitial=K — they must NOT share a cache slot.
     const key = `${lastName}_${firstInitial}_${(firstName || "").toLowerCase()}_${subject || ""}`.toLowerCase();
     if (profCache.has(key)) return profCache.get(key);
+
+    if (!isContextAlive()) {
+      // Orphaned content script. Silent no-op — don't spam the console for
+      // every cell; user just needs to reload the tab after updating.
+      return Promise.resolve(null);
+    }
 
     const promise = chrome.runtime
       .sendMessage({ type: "rmp:search", lastName, firstInitial, subject, firstName })
@@ -38,6 +58,7 @@
 
   RMP.fetchDetails = function fetchDetails(id) {
     if (detailsCache.has(id)) return detailsCache.get(id);
+    if (!isContextAlive()) return Promise.resolve(null);
     const promise = chrome.runtime
       .sendMessage({ type: "rmp:teacherDetails", id })
       .then((resp) => (resp?.error ? null : resp?.result ?? null))

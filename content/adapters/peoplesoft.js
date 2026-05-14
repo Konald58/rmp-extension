@@ -70,6 +70,12 @@
     // PeopleSoft does AJAX for sort/filter; re-scan on DOM mutations.
     let scanTimer = null;
     const observer = new MutationObserver(() => {
+      // If the extension was reloaded/updated while this page is open, the
+      // content script is orphaned; stop observing.
+      if (!chrome?.runtime?.id) {
+        observer.disconnect();
+        return;
+      }
       clearTimeout(scanTimer);
       scanTimer = setTimeout(() => peopleSoftScan(RMP), 150);
     });
