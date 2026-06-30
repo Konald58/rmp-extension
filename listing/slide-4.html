@@ -4,11 +4,15 @@
 <title>Slide 4 — Many schools</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  /* Card snug to popup — drop bottom Banner bleed.
+  /* Split layout — text panel left, school-picker popup centered in visual.
      Source: arizona.png (3396×1722). */
   .card {
     width: 400px;
     height: 560px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   .card .shot {
     width: 100%;
@@ -18,12 +22,14 @@
     background-position: -1507px -121px;
   }
 </style></head><body>
-<div class="stacked">
-  <div class="head">
+<div class="split">
+  <div class="text">
     <span class="eyebrow">~1,400 universities supported</span>
-    <h1>USF, UF, Penn State, Arizona — type your school, done.</h1>
+    <h1>Type your school, <br>and you're set.</h1>
+    <p>USF, UF, Penn State, Arizona — or any university on Rate My Professors. Switch schools anytime from the popup, no reinstalling.</p>
+    <div class="brand-mark">Professor Ratings for Course Search</div>
   </div>
-  <div class="body">
+  <div class="visual">
     <div class="card shadow"><div class="shot"></div></div>
   </div>
 </div>
