@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>Slide 5 — Built for both</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Split layout — text panel left, popup floating right. */
+  .card {
+    width: 380px;
+    height: 480px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .card .shot {
+    width: 100%;
+    height: 100%;
+    background-image: url("/screenshots/raw/popup.png");
+    background-size: 380px auto;        /* native 686 wide → fit card width */
+    background-position: center top;
+  }
+  .pill-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .pill {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+</style></head><body>
+<div class="split">
+  <div class="text">
+    <span class="eyebrow">Multi-SIS support</span>
+    <h1>Built for Banner <span style="color: var(--accent)">+</span> PeopleSoft.</h1>
+    <p>Switch schools without reinstalling. Same ratings, whichever course-search system your university runs.</p>
+    <div class="pill-row">
+      <span class="pill">Banner SSB9</span>
+      <span class="pill">PeopleSoft</span>
+      <span class="pill">More soon</span>
+    </div>
+  </div>
+  <div class="visual">
+    <div class="card shadow"><div class="shot"></div></div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>Slide 1 — Hero</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Card centered in right visual panel.
+     Source: hero.png (3832×1860). Scale 0.85, crop to Instructor + Meeting Times
+     columns starting from row 1 so badges are large and readable. */
+  .card {
+    width: 680px;
+    height: 480px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .card .shot {
+    width: 100%;
+    height: 100%;
+    background-image: url("/screenshots/raw/hero.png");
+    background-size: 3257px auto;       /* 3832 × 0.85 */
+    background-position: -1340px -540px;
+  }
+</style></head><body>
+<div class="split">
+  <div class="text">
+    <span class="eyebrow">Course registration, upgraded</span>
+    <h1>See ratings <br>without leaving <br>registration.</h1>
+    <p>Rate My Professors data appears inline next to every instructor — no copy-pasting names into a new tab.</p>
+    <div class="brand-mark">Professor Ratings for Course Search</div>
+  </div>
+  <div class="visual">
+    <div class="card shadow">
+      <div class="shot"></div>
+    </div>
+  </div>
+</div>
+</body></html>

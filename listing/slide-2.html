@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>Slide 2 — Distribution</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Split layout — text panel left, popover card centered in visual.
+     Source: chen.png (3832×1860). */
+  .card {
+    width: 600px;
+    height: 396px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .card .shot {
+    width: 100%;
+    height: 100%;
+    background-image: url("/screenshots/raw/chen.png");
+    background-size: 3234px auto;        /* 2533 × 1.277 — same crop */
+    background-position: -1455px -771px;
+  }
+</style></head><body>
+<div class="split">
+  <div class="text">
+    <span class="eyebrow">Hover any name</span>
+    <h1>The full rating <br>distribution, <br>no extra tabs.</h1>
+    <p>Hover an instructor to see the whole breakdown — Awesome to Awful — plus the would-take-again rate, without ever opening Rate My Professors.</p>
+    <div class="brand-mark">Professor Ratings for Course Search</div>
+  </div>
+  <div class="visual">
+    <div class="card shadow"><div class="shot"></div></div>
+  </div>
+</div>
+</body></html>

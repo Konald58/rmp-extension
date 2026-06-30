@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>Slide 3 — Ambiguity</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Split layout — text panel left, popover (with ambiguity banner) centered.
+     Source: pradhan.png (3832×1860). */
+  .card {
+    width: 600px;
+    height: 490px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .card .shot {
+    width: 100%;
+    height: 100%;
+    background-image: url("/screenshots/raw/pradhan.png");
+    background-size: 3234px auto;        /* 2533 × 1.277 — same crop */
+    background-position: -1455px -907px;
+  }
+</style></head><body>
+<div class="split">
+  <div class="text">
+    <span class="eyebrow">No more guessing</span>
+    <h1>Catches name <br>collisions before <br>you commit.</h1>
+    <p>When several professors share a name, you get a heads-up to verify first — so you never lock in a section trusting the wrong rating.</p>
+    <div class="brand-mark">Professor Ratings for Course Search</div>
+  </div>
+  <div class="visual">
+    <div class="card shadow"><div class="shot"></div></div>
+  </div>
+</div>
+</body></html>
