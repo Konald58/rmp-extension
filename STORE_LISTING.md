@@ -63,9 +63,14 @@ Used to save the user's selected school (Rate My Professors school ID) so they d
 Required so the service worker can fetch professor rating data from the Rate My Professors GraphQL API. Without it, the extension cannot retrieve any ratings.
 ```
 
-### Content scripts on `https://*/StudentRegistrationSsb/*`
+### Content scripts on `https://*/StudentRegistrationSsb/*` (and `*/ssb/*classRegistration*`, `*/ssb/*scheduleDetails*`)
 ```
 Banner SSB9 is hosted on different domains at every university (e.g. studentssb9.it.usf.edu, banner.fsu.edu, ssb.ufl.edu). The /StudentRegistrationSsb/ path is the universal Banner SSB9 application path. The wildcard host is required to support users at any institution; the path is narrow enough that the extension only runs on Banner registration pages, never on unrelated sites.
+```
+
+### Content scripts on `https://*/*COMMUNITY_ACCESS.CLASS_SEARCH.GBL*`
+```
+This is Oracle PeopleSoft Campus Solutions' universal public Class Search component path, used by hundreds of universities (NAU, U Houston, Ohio State, SF State, and more), each on its own domain. The wildcard host is required to support users at any institution; the path is narrow enough that the extension only runs on PeopleSoft class-search pages, never on unrelated sites.
 ```
 
 ## Privacy practices declarations
