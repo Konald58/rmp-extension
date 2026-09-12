@@ -49,6 +49,17 @@ Order matters — `common.js` defines `window.RMP`; adapters register against it
 - **School dedup** trades small isolated branch campuses (e.g. NAU Yuma) for a cleaner picker.
 - **Orphan content-script context is a real production hazard:** when the extension reloads/auto-updates while a registration page is open, the page's content script becomes orphaned (`chrome.runtime` undefined). A synchronous `TypeError` fires on the next IPC *before* any Promise, so `.catch` can't intercept. Fix: an `isContextAlive()` check (canonical: `chrome?.runtime?.id`) gating every `sendMessage`, plus a MutationObserver `disconnect()` when a dead context is detected.
 
+## Public-facing assets (screenshots, store listing, social) — added 2026-07-29
+
+Rules for anything built from `screenshots/raw/` that will be seen outside this machine.
+
+- **Blur professor names.** Real, named, low-rated professors appear in every capture. The user's rule: don't dox them in public assets. Use a **radius-8 gaussian over the full name line** — a tighter band leaves a readable sliver, and radius ≥13 collapses to solid grey boxes that read as broken UI rather than redaction.
+- **Every raw capture carries PII.** "Dragovic, K." sits in the logged-in Banner header; the school-picker capture also shows the browser bookmarks bar including a `NextRegWork` folder. Crop below/around both. (This is why `screenshots/raw/` is gitignored.)
+- **Badge bar fills by `(rating − 1) / 4`**, not `rating/5`. Verified against a real 2.5 card: 88px fill on a 234px track = 37.5%. Required for any hand-built or edited badge asset to look right.
+- **Captures are display-P3-shifted vs. the CSS.** Tier red `#c0392b` captures as `rgb(178,68,52)`; tier green `#006747` as `rgb(43,102,74)`. When compositing into a screenshot, **sample the color from an existing capture** — the CSS hex will look subtly wrong.
+- **Screen recordings / demos: use the public NAU PeopleSoft class search**, never the logged-in USF Banner page. Same reason the Web Store reviewer was pointed there.
+- Render pipeline for slide assets is `listing/render.sh` (python http.server + headless Chrome `--screenshot`). Chrome silently fails on `file://` background-images — always serve over HTTP.
+
 ## Tooling
 
 - **Tests**: Jest + jest-environment-jsdom. `npm test`. 55 tests across name-parser, peoplesoft (unit + fixture DOM scan), scoring, and integration-peoplesoft (full pipeline with a stubbed `chrome.runtime`).
