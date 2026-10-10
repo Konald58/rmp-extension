@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Professor Ratings for Course Search",
   "version": "2.1.0",
-  "description": "Inline Rate My Professors ratings on Banner, PeopleSoft, UO DuckWeb and other course registration systems.",
+  "description": "Rate My Professors ratings inline on Banner (SSB9 and classic self-service) and PeopleSoft class search pages.",
   "permissions": ["storage"],
   "host_permissions": [
     "https://www.ratemyprofessors.com/*"
@@ -17,7 +17,11 @@
         "https://*/ssb/*classRegistration*",
         "https://*/ssb/*scheduleDetails*",
         "https://*/*COMMUNITY_ACCESS.CLASS_SEARCH.GBL*",
-        "https://duckweb.uoregon.edu/duckweb/hwskdhnt.*"
+        "https://duckweb.uoregon.edu/duckweb/hwskdhnt.*",
+        "https://*/*bwckschd.p_get_crse_unsec*",
+        "https://*/*bwckschd.p_disp_detail_sched*",
+        "https://*/*bwckschd.p_disp_listcrse*",
+        "https://*/*bwskfcls.P_GetCrse*"
       ],
       "js": [
         "content/name-parser.js",
@@ -25,6 +29,7 @@
         "content/adapters/banner.js",
         "content/adapters/peoplesoft.js",
         "content/adapters/duckweb.js",
+        "content/adapters/banner8.js",
         "content/index.js"
       ],
       "css": ["styles.css"],

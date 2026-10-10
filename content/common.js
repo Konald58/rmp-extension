@@ -408,14 +408,15 @@
   // Adapters pass each (element, parsed) match into this; common.js handles
   // the search → inject pipeline and dedup. Keeps adapters minimal.
 
-  // `courseInfo` is optional: adapters whose page structure defeats the
-  // ancestor walker (one table holding every course, e.g. DuckWeb) resolve it
-  // themselves and pass it in.
+  // `courseInfo` is optional. Adapters whose page structure defeats the
+  // ancestor walker (one table holding every course: DuckWeb, Banner 8)
+  // resolve it themselves and pass it in; passing `null` means "unknown,
+  // and do not guess", while leaving it undefined runs the walker.
   RMP.processInstructorElement = function processInstructorElement(element, parsed, courseInfo) {
     if (!element || !parsed) return;
     if (element.hasAttribute(RMP.BADGE_ATTR)) return;
 
-    const info = courseInfo || RMP.findCourseInfo(element);
+    const info = courseInfo !== undefined ? courseInfo : RMP.findCourseInfo(element);
     element.setAttribute(RMP.BADGE_ATTR, "pending");
 
     RMP.searchProfessor(

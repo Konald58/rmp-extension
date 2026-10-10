@@ -13,7 +13,7 @@ Professor Ratings for Course Search
 ## Short description (max 132 chars)
 
 ```
-See Rate My Professors ratings inline on Banner, PeopleSoft, and other course registration systems — no extra clicks.
+Rate My Professors ratings inline on Banner and PeopleSoft class search — no extra tabs, no copy-pasting names.
 ```
 
 ## Category
@@ -30,14 +30,15 @@ WHAT YOU GET
 • Color-coded by tier (green ≥ 4.0, gold 3.0–3.9, red < 3.0)
 • Hover a card to see the full rating distribution (Awesome → Awful)
 • Click any card to open the full RMP profile in a new tab
-• Searchable school picker — works at any of the ~1,400 schools listed on Rate My Professors
+• Searchable school picker over Rate My Professors' full school directory
 • Smart matching: warns you when multiple professors share the same name so you can verify
 
 WORKS ON
-• Ellucian Banner SSB9 (USF, UF, FSU, UCF, FIU, Penn State, Texas A&M, and ~1,400 more)
-• Oracle PeopleSoft Campus Solutions Class Search (NAU, U Houston, FIU, Ohio State, SF State, and hundreds more)
-• University of Oregon DuckWeb class schedule
-• Find Classes search results AND Schedule Details panel on supported systems
+• Ellucian Banner 9 Student Self-Service (Find Classes results and Schedule Details). Verified at the University of South Florida.
+• Ellucian Banner 8 classic self-service (Class Schedule Listing, Detailed Class Information, Look Up Classes). Verified at the University of Oregon.
+• Oracle PeopleSoft Campus Solutions Class Search. Verified at Northern Arizona University.
+• University of Oregon DuckWeb class schedule.
+Other schools on these systems should work; the extension is built per system, not per school. If yours does not, use the report link in the popup.
 
 PRIVACY
 No tracking. No analytics. No accounts. The only thing this extension stores is your chosen school. Source code is open at github.com/Konald58/rmp-extension.
@@ -49,7 +50,7 @@ This is an independent project, not affiliated with any university or with Rate 
 ## Single purpose (required)
 
 ```
-Display Rate My Professors ratings inline on university course-registration pages (Ellucian Banner SSB9, Oracle PeopleSoft Campus Solutions, University of Oregon DuckWeb) so students can evaluate instructors during registration without leaving the page.
+Display Rate My Professors ratings inline on university course-registration pages (Ellucian Banner 9 and Banner 8 self-service, Oracle PeopleSoft Campus Solutions, University of Oregon DuckWeb) so students can evaluate instructors during registration without leaving the page.
 ```
 
 ## Permissions justifications
@@ -77,6 +78,10 @@ This is Oracle PeopleSoft Campus Solutions' universal public Class Search compon
 ### Content script on `https://duckweb.uoregon.edu/duckweb/hwskdhnt.*`
 
 DuckWeb is the University of Oregon's own class-schedule application (a custom Banner 8 front end on a single, fixed host). The pattern is limited to that host and to the `hwskdhnt.` schedule procedures, so the extension runs only on UO class-schedule pages.
+
+### Content scripts on `https://*/*bwckschd.p_get_crse_unsec*`, `https://*/*bwckschd.p_disp_detail_sched*`, `https://*/*bwckschd.p_disp_listcrse*`, `https://*/*bwskfcls.P_GetCrse*`
+
+These are the fixed procedure names of Ellucian Banner 8 classic self-service's class schedule listing, detailed class information, and "Look Up Classes" results pages. Banner 8 is hosted on a different domain at every university that still runs it (e.g. duckweb.uoregon.edu), so the wildcard host is required; the paths name specific Banner procedures, so the extension only runs on those class pages, never on unrelated sites.
 
 ## Privacy practices declarations
 

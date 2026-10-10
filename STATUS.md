@@ -15,24 +15,28 @@ Workday Student and custom registration portals are planned but not started.
 ## Where it stands (2026-10-10)
 
 - **Live on the Chrome Web Store** at 2.0.0 (extension ID `fddicmacgfogicmodgojnmgenlepeejb`).
-- **2.1.0 built on `feat/duckweb-adapter`, not yet uploaded.** Adds a University of Oregon
-  DuckWeb adapter (`content/adapters/duckweb.js`) after a friend at UO saw no ratings: DuckWeb
-  is a custom Banner 8 class schedule whose URL matched no pattern and whose instructor cells
-  read `Lastname F`. Verified against a real UO CS listing (fixture) and by injecting the
-  content scripts into that page in the browser.
+- **2.1.0 built on local `main`, not yet uploaded.** A friend at the University of Oregon saw no
+  ratings. UO runs Banner 8 (DuckWeb), which the extension never supported: only Banner 9 SSB
+  URLs matched. 2.1.0 adds a generic **Banner 8 classic self-service adapter**
+  (`content/adapters/banner8.js`: Class Schedule Listing, Detailed Class Information, Look Up
+  Classes) built from a real UO schedule capture, plus a **UO DuckWeb schedule adapter**
+  (`content/adapters/duckweb.js`) for UO's custom public schedule, verified in the browser.
+- **Reach claims cut to verified schools** (USF, UO, NAU) across README, store listing, manifest
+  and the personal-website project entry. README rewritten as the portfolio page.
 - 2.1.0 also removes the silent USF fallback: with no school selected the badge now says
   "Choose your school in the Professor Ratings extension popup, then refresh".
-- 73/73 Jest tests, ESLint clean. `rmp-extension-v2.1.0.zip` built at the repo root.
+- 90/90 Jest tests, ESLint clean. `rmp-extension-v2.1.0.zip` built at the repo root.
 - CHANGELOG, README (store link, test count, DuckWeb row), PRIVACY.md and STORE_LISTING.md
   (new content-script pattern plus justification) are updated.
 
 ## Next up
 
-- Upload `rmp-extension-v2.1.0.zip` to the Web Store dashboard. The new
-  `duckweb.uoregon.edu` content-script pattern will trigger a review; paste the justification
-  from `STORE_LISTING.md`.
+- Upload `rmp-extension-v2.1.0.zip` to the Web Store dashboard and paste the updated listing
+  copy (WORKS ON section) and the Banner 8 + DuckWeb host justifications from
+  `STORE_LISTING.md`. New content-script patterns will trigger a review.
 - Ask the UO friend to re-test once 2.1.0 is live (pick "University of Oregon" in the popup
-  first).
+  first). Banner 8 "Look Up Classes" (logged in) is covered by a synthetic test only; his run is
+  the first live check of that page.
 - Push `feat/duckweb-adapter`, merge to `main`, tag `v2.1.0`.
 - Workday Student adapter (Phase 3) still needs a real class-search HTML fixture.
 - Custom-frontend-wrapper adapters (Phase 4) not started.

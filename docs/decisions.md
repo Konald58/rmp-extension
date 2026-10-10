@@ -58,3 +58,11 @@
   "Choose your school in the Professor Ratings extension popup, then refresh" and no RMP
   request is made. The fallback showed students elsewhere another university's professors
   matched by last name and initial, which is worse than showing nothing.
+- **2026-10-10** — Added a generic Ellucian Banner 8 classic self-service adapter
+  (`bwckschd.p_get_crse_unsec`, `bwckschd.p_disp_detail_sched`, `bwckschd.p_disp_listcrse`,
+  `bwskfcls.P_GetCrse*`). UO exposes the public dynamic schedule, which gave a real fixture; the
+  logged-in Look Up Classes page uses the same table markup and is covered by a synthetic test.
+  Banner 8 shows full first names, so the adapter passes `firstName` for disambiguation.
+- **2026-10-10** — Public copy names only verified schools (USF for Banner 9, UO for Banner 8 and
+  DuckWeb, NAU for PeopleSoft) and says "other schools on these systems should work". The
+  "~1,400 universities" reach claim is gone from README, store listing, manifest and the website.

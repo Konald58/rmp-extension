@@ -5,10 +5,10 @@ How any AI tool should work in this repo.
 ## What this is
 
 "Professor Ratings for Course Search" — a Chrome extension (MV3, vanilla JS, zero-build) that
-injects Rate My Professors ratings inline on university course-registration pages. Supports
-Ellucian Banner SSB9 (~1,400 universities) and Oracle PeopleSoft Campus Solutions Class Search
-(hundreds more, e.g. NAU, U Houston, FIU, Ohio State, SF State), plus the University of Oregon's
-DuckWeb class schedule.
+injects Rate My Professors ratings inline on university course-registration pages. Adapters:
+Ellucian Banner 9 (verified USF), Ellucian Banner 8 classic self-service (verified UO), Oracle
+PeopleSoft Campus Solutions Class Search (verified NAU), and UO's DuckWeb schedule. Public copy
+names only verified schools; do not reintroduce "~1,400 universities" style reach claims.
 
 - Repo: https://github.com/Konald58/rmp-extension
 - Privacy policy: https://konald58.github.io/rmp-extension/PRIVACY
@@ -19,7 +19,7 @@ DuckWeb class schedule.
 
 ```bash
 npm install     # dev deps only: eslint, jest, jest-environment-jsdom
-npm test        # jest — 73 tests across name-parser, peoplesoft, duckweb, scoring, integration
+npm test        # jest — 90 tests across name-parser, peoplesoft, banner8, duckweb, scoring, integration
 npm run lint    # eslint . --no-warn-ignored
 ```
 
@@ -40,6 +40,8 @@ content/
                              registry (RMP.adapters / RMP.registerAdapter)
   adapters/banner.js         Banner SSB9 scan + MutationObserver
   adapters/peoplesoft.js     PeopleSoft scan + name parsing (exports parsePeopleSoftName for tests)
+  adapters/banner8.js        Banner 8 classic: Instructors/Instructor column, "First Last (P)" parser (full
+                             first name passed through), course from the section title row or Subj/Crse columns
   adapters/duckweb.js        UO DuckWeb scan: Instructor column lookup, `Lastname F` parser, course code
                              from the preceding header row (passed as processInstructorElement's 3rd arg)
   index.js                   dispatcher — first adapter whose matches(location) is true wins
@@ -63,6 +65,7 @@ content/common.js
 content/adapters/banner.js
 content/adapters/peoplesoft.js
 content/adapters/duckweb.js
+content/adapters/banner8.js
 content/index.js
 ```
 
@@ -89,6 +92,8 @@ dispatches last. Add new adapters before `index.js`, and add the new file to bot
   `TypeError` fires before any Promise, so `.catch` can't catch it. Every `sendMessage` call
   must be gated by an `isContextAlive()` check (`chrome?.runtime?.id`), and MutationObservers
   must `disconnect()` once a dead context is detected.
+- `RMP.processInstructorElement(el, parsed, courseInfo)`: `undefined` runs the ancestor walker,
+  `null` means "unknown, do not guess" (pages where one table holds every course).
 - Each SIS is an adapter in `content/adapters/`; a new registration system is one new file that
   self-registers and detects itself via URL pattern — don't branch existing adapters.
 - ESLint globals are file-scoped in `eslint.config.js` for `background.js` (pulled in via
