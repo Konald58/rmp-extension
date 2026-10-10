@@ -7,7 +7,8 @@ How any AI tool should work in this repo.
 "Professor Ratings for Course Search" — a Chrome extension (MV3, vanilla JS, zero-build) that
 injects Rate My Professors ratings inline on university course-registration pages. Supports
 Ellucian Banner SSB9 (~1,400 universities) and Oracle PeopleSoft Campus Solutions Class Search
-(hundreds more, e.g. NAU, U Houston, FIU, Ohio State, SF State).
+(hundreds more, e.g. NAU, U Houston, FIU, Ohio State, SF State), plus the University of Oregon's
+DuckWeb class schedule.
 
 - Repo: https://github.com/Konald58/rmp-extension
 - Privacy policy: https://konald58.github.io/rmp-extension/PRIVACY
@@ -18,7 +19,7 @@ Ellucian Banner SSB9 (~1,400 universities) and Oracle PeopleSoft Campus Solution
 
 ```bash
 npm install     # dev deps only: eslint, jest, jest-environment-jsdom
-npm test        # jest — 55 tests across name-parser, peoplesoft, scoring, integration
+npm test        # jest — 73 tests across name-parser, peoplesoft, duckweb, scoring, integration
 npm run lint    # eslint . --no-warn-ignored
 ```
 
@@ -39,6 +40,8 @@ content/
                              registry (RMP.adapters / RMP.registerAdapter)
   adapters/banner.js         Banner SSB9 scan + MutationObserver
   adapters/peoplesoft.js     PeopleSoft scan + name parsing (exports parsePeopleSoftName for tests)
+  adapters/duckweb.js        UO DuckWeb scan: Instructor column lookup, `Lastname F` parser, course code
+                             from the preceding header row (passed as processInstructorElement's 3rd arg)
   index.js                   dispatcher — first adapter whose matches(location) is true wins
 lib/scoring.js               scoring helpers pulled in via importScripts (not manifest-listed —
                              don't forget it when zipping for a store submission)
@@ -59,6 +62,7 @@ content/name-parser.js
 content/common.js
 content/adapters/banner.js
 content/adapters/peoplesoft.js
+content/adapters/duckweb.js
 content/index.js
 ```
 

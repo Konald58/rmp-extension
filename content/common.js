@@ -6,6 +6,11 @@
 
   RMP.BADGE_ATTR = "data-rmp-badge";
 
+  // Sentinel returned by searchProfessor when the user has not picked a school
+  // yet. Without this the worker used to fall back to USF, which silently
+  // showed another university's professors.
+  RMP.NO_SCHOOL = Object.freeze({ noSchool: true });
+
   // ===== IPC + cache =====
 
   const profCache = new Map();
@@ -41,6 +46,7 @@
     const promise = chrome.runtime
       .sendMessage({ type: "rmp:search", lastName, firstInitial, subject, firstName })
       .then((resp) => {
+        if (resp?.noSchool) return RMP.NO_SCHOOL;
         if (resp?.error) {
           console.error("[RMP] background error:", resp.error);
           return null;
@@ -333,10 +339,12 @@
     const wrap = document.createElement("div");
     wrap.className = "rmp-container";
 
-    if (!data) {
+    if (!data || data.noSchool) {
       const empty = document.createElement("span");
       empty.className = "rmp-empty";
-      empty.textContent = "No RMP data";
+      empty.textContent = data?.noSchool
+        ? "Choose your school in the Professor Ratings extension popup, then refresh"
+        : "No RMP data";
       wrap.appendChild(empty);
       element.appendChild(wrap);
       return;
@@ -391,17 +399,20 @@
   // Adapters pass each (element, parsed) match into this; common.js handles
   // the search → inject pipeline and dedup. Keeps adapters minimal.
 
-  RMP.processInstructorElement = function processInstructorElement(element, parsed) {
+  // `courseInfo` is optional: adapters whose page structure defeats the
+  // ancestor walker (one table holding every course, e.g. DuckWeb) resolve it
+  // themselves and pass it in.
+  RMP.processInstructorElement = function processInstructorElement(element, parsed, courseInfo) {
     if (!element || !parsed) return;
     if (element.hasAttribute(RMP.BADGE_ATTR)) return;
 
-    const courseInfo = RMP.findCourseInfo(element);
+    const info = courseInfo || RMP.findCourseInfo(element);
     element.setAttribute(RMP.BADGE_ATTR, "pending");
 
     RMP.searchProfessor(
       parsed.lastName,
       parsed.firstInitial,
-      courseInfo?.subject,
+      info?.subject,
       parsed.firstName
     ).then((result) => {
       RMP.injectBadge(element, result);

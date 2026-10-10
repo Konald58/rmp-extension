@@ -5,11 +5,12 @@ A Chrome extension that injects [Rate My Professors](https://www.ratemyprofessor
 Works on:
 - **Ellucian Banner SSB9** — ~1,400 universities including USF, UF, FSU, UCF, FIU, Penn State, Texas A&M
 - **Oracle PeopleSoft Campus Solutions Class Search** — hundreds of universities including NAU, U Houston, FIU, Ohio State, SF State
+- **University of Oregon DuckWeb** class schedule
 - More systems planned (Workday Student, custom registration portals)
 
 ## What it does
 
-- Scans your university's course-search page for instructor names — works automatically on Banner SSB9 and PeopleSoft Class Search
+- Scans your university's course-search page for instructor names — works automatically on Banner SSB9, PeopleSoft Class Search and UO DuckWeb
 - Looks each professor up on Rate My Professors for your selected school
 - Renders a compact card on each instructor showing **Rating · Difficulty · Retake %** with a tier-colored bar (green ≥4.0, gold 3.0–3.9, red <3.0)
 - Hover any badge for the full rating distribution chart (Awesome → Awful breakdown)
@@ -20,7 +21,7 @@ Works on:
 
 ### From Chrome Web Store
 
-(Coming soon)
+[Professor Ratings for Course Search](https://chromewebstore.google.com/detail/professor-ratings-for-cou/fddicmacgfogicmodgojnmgenlepeejb)
 
 ### From source (load unpacked)
 
@@ -41,6 +42,7 @@ Click the extension icon and search for your school — typeahead pulls from Rat
 |---|---|---|
 | **Ellucian Banner SSB9** | `*/StudentRegistrationSsb/*`, `*/ssb/*classRegistration*`, `*/ssb/*scheduleDetails*` | USF, UF, FSU, UCF, FIU, Penn State, Texas A&M (~1,400 total) |
 | **Oracle PeopleSoft Campus Solutions** | `*COMMUNITY_ACCESS.CLASS_SEARCH.GBL*` (the public guest namespace) | NAU, U Houston, FIU, Ohio State, SF State (hundreds total) |
+| **University of Oregon DuckWeb** | `duckweb.uoregon.edu/duckweb/hwskdhnt.*` (custom Banner 8 class schedule) | UO |
 | **Workday Student** | (planned) | Cornell, USC, Yale, Brown, CMU, Duke, Georgetown, U Miami |
 
 Each registration system is a separate **adapter** in `content/adapters/`. Adapters detect themselves based on URL pattern and only run on matching pages — so the Banner adapter never fires on PeopleSoft pages and vice versa. Adding a new system means writing one file.
@@ -53,7 +55,8 @@ content/
 ├── common.js              # shared: RMP search, badge inject, popover, walker
 ├── adapters/
 │   ├── banner.js          # Banner SSB9 scan (walks "(Primary)"/"(Secondary)" text)
-│   └── peoplesoft.js      # PeopleSoft scan (queries span[id^="MTG_INSTR$"])
+│   ├── peoplesoft.js      # PeopleSoft scan (queries span[id^="MTG_INSTR$"])
+│   └── duckweb.js         # UO DuckWeb scan (Instructor column in datadisplaytable)
 └── index.js               # dispatcher — picks first matching adapter
 
 background.js              # service worker; RMP GraphQL client (6 concurrent max)
@@ -76,7 +79,7 @@ npm install
 npm test
 ```
 
-29 tests covering name parsing (Banner + PeopleSoft variants) and DOM scan against a live NAU PeopleSoft fixture. CI runs them on every push (`.github/workflows/test.yml`).
+73 tests covering name parsing (Banner, PeopleSoft and DuckWeb variants), match scoring, and DOM scans plus full-pipeline runs against real NAU PeopleSoft and UO DuckWeb fixtures. CI runs them on every push (`.github/workflows/test.yml`).
 
 ## Disclaimer
 
@@ -86,7 +89,7 @@ Ratings shown are pulled from Rate My Professors and may be inaccurate, outdated
 
 ## Privacy
 
-The extension stores only your selected school in Chrome's sync storage. It does not collect, transmit, or share any other data.
+The extension stores only your selected school in Chrome's sync storage. It does not collect, transmit, or share any other data. Until you pick a school it makes no requests at all.
 
 See [PRIVACY.md](PRIVACY.md) for the full policy.
 

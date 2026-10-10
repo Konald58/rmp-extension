@@ -7,15 +7,17 @@
 importScripts("lib/scoring.js");
 
 const RMP_URL = "https://www.ratemyprofessors.com/graphql";
-const DEFAULT_SCHOOL_GRAPHQL_ID = "U2Nob29sLTEyNjI="; // USF Tampa fallback
 const HEADERS = {
   "Content-Type": "application/json",
   "Referer": "https://www.ratemyprofessors.com/",
 };
 
+// Returns null when the user has not picked a school. There is deliberately
+// no default: falling back to one school showed students elsewhere another
+// university's professors matched by last name and initial.
 async function getSchoolGraphqlId() {
   const data = await chrome.storage.sync.get("schoolGraphqlId");
-  return data.schoolGraphqlId || DEFAULT_SCHOOL_GRAPHQL_ID;
+  return data.schoolGraphqlId || null;
 }
 
 function professorUrl(id) {
@@ -82,6 +84,7 @@ const SEARCH_QUERY = `
 
 async function searchProfessor(lastName, firstInitial, subject, firstName) {
   const schoolGraphqlId = await getSchoolGraphqlId();
+  if (!schoolGraphqlId) return { noSchool: true };
 
   let data;
   try {

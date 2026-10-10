@@ -29,3 +29,6 @@ CLAUDE.local.md
 # pipeline (listing/render.sh) uses these locally; only the cropped, PII-free
 # slides in screenshots/listing/ are published.
 screenshots/raw/
+
+# Local Claude Code launch config
+.claude/

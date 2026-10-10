@@ -1,8 +1,18 @@
 # Changelog
 
-## [Unreleased — v2.0.0 candidate]
+## [2.1.0] — 2026-10-09
 
-This is the rollup of all work since v1.1.1 (the version currently in Chrome Web Store review). Submit as v2.0.0 once the v1.1.1 privacy-URL appeal clears and USF/NAU smoke tests pass.
+### Added
+- **University of Oregon DuckWeb support.** Adapter at `content/adapters/duckweb.js` matches `duckweb.uoregon.edu/duckweb/hwskdhnt.*`, UO's custom Banner 8 class schedule. Instructor cells there read `Lastname F` with no `(Primary)` marker and the URL matched none of the existing patterns, so the extension never ran at UO. The adapter finds the `Instructor` column in each results table, parses the name, skips `STAFF` / `tba`, and reads the course code from the nearest preceding course-header row (one table holds every course, so the shared ancestor walker would have returned the first course on the page).
+- `RMP.processInstructorElement` accepts an optional pre-resolved `courseInfo` third argument for adapters that resolve the course themselves.
+- 18 new tests: DuckWeb parser, matcher, course lookup, a DOM scan and a full pipeline run against a real UO CS listing (`tests/fixtures/duckweb-uoregon.html`), plus the no-school guard below.
+
+### Fixed
+- **No school selected no longer falls back to USF.** `background.js` used to default to USF's school ID, so a student at any other university who skipped the picker got USF professors matched by last name and initial, confidently wrong. The worker now reports `noSchool` and every instructor cell shows "Choose your school in the Professor Ratings extension popup, then refresh" instead of a rating.
+
+## [2.0.0] — 2026-07-28
+
+Rollup of all work since v1.1.1. Live on the Chrome Web Store since 2026-07-28.
 
 ### Added
 - **Report-an-issue link in popup** that opens a pre-filled GitHub Issues URL with extension version, selected school, and user agent. Zero infrastructure — no email handling, no telemetry, everything stays in the user's browser. Lets users at unsupported PeopleSoft instances or unknown Banner schools flag breaks for follow-up.

@@ -12,25 +12,30 @@ pages. Supports Ellucian Banner SSB9 (~1,400 universities) and Oracle PeopleSoft
 Solutions Class Search (hundreds more, e.g. NAU, U Houston, FIU, Ohio State, SF State).
 Workday Student and custom registration portals are planned but not started.
 
-## Where it stands (2026-09-12)
+## Where it stands (2026-10-10)
 
-- **Live on the Chrome Web Store** at version 2.0.0 (extension ID
-  `fddicmacgfogicmodgojnmgenlepeejb`), currently with a handful of installs and no ratings yet.
-- `manifest.json` / `package.json` both at 2.0.0. Adds multi-SIS support (Banner + PeopleSoft),
-  an ambiguity warning when a name match is uncertain, a report-an-issue flow in the popup, and
-  a concurrency limiter on Rate My Professors requests.
-- 55/55 Jest tests passing, ESLint clean, CI (GitHub Actions, Node 20) green on `main`.
-- Two known cleanup items sitting in the repo: `CHANGELOG.md`'s top entry is still headed
-  "Unreleased — v2.0.0 candidate" even though 2.0.0 has shipped, and `README.md`'s Chrome Web
-  Store install link still reads "(Coming soon)".
+- **Live on the Chrome Web Store** at 2.0.0 (extension ID `fddicmacgfogicmodgojnmgenlepeejb`).
+- **2.1.0 built on `feat/duckweb-adapter`, not yet uploaded.** Adds a University of Oregon
+  DuckWeb adapter (`content/adapters/duckweb.js`) after a friend at UO saw no ratings: DuckWeb
+  is a custom Banner 8 class schedule whose URL matched no pattern and whose instructor cells
+  read `Lastname F`. Verified against a real UO CS listing (fixture) and by injecting the
+  content scripts into that page in the browser.
+- 2.1.0 also removes the silent USF fallback: with no school selected the badge now says
+  "Choose your school in the Professor Ratings extension popup, then refresh".
+- 73/73 Jest tests, ESLint clean. `rmp-extension-v2.1.0.zip` built at the repo root.
+- CHANGELOG, README (store link, test count, DuckWeb row), PRIVACY.md and STORE_LISTING.md
+  (new content-script pattern plus justification) are updated.
 
 ## Next up
 
-- Reconcile `CHANGELOG.md`'s "Unreleased" heading with the shipped 2.0.0 release.
-- Update `README.md`'s Web Store link (currently "(Coming soon)").
-- Workday Student adapter (Phase 3) — needs a real class-search HTML fixture from a
-  Workday-using school before it can be built.
-- Custom-frontend-wrapper adapters (Phase 4) — lower priority, not started.
+- Upload `rmp-extension-v2.1.0.zip` to the Web Store dashboard. The new
+  `duckweb.uoregon.edu` content-script pattern will trigger a review; paste the justification
+  from `STORE_LISTING.md`.
+- Ask the UO friend to re-test once 2.1.0 is live (pick "University of Oregon" in the popup
+  first).
+- Push `feat/duckweb-adapter`, merge to `main`, tag `v2.1.0`.
+- Workday Student adapter (Phase 3) still needs a real class-search HTML fixture.
+- Custom-frontend-wrapper adapters (Phase 4) not started.
 
 ## Open questions
 

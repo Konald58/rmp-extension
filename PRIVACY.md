@@ -8,7 +8,7 @@ This extension does not collect, store, or transmit any personally identifiable 
 
 ## What the extension does
 
-When you visit a supported course registration page (Banner SSB9 or PeopleSoft Campus Solutions Class Search), the extension:
+When you visit a supported course registration page (Banner SSB9, PeopleSoft Campus Solutions Class Search, or the University of Oregon DuckWeb class schedule), the extension:
 
 1. **Reads instructor names** that are already visible on the page
 2. **Sends only the instructor's last name and first initial** to Rate My Professors' GraphQL endpoint (`https://www.ratemyprofessors.com/graphql`) along with your configured school identifier
@@ -44,7 +44,7 @@ The extension queries Rate My Professors' public GraphQL endpoint. Your interact
 |---|---|
 | `storage` | Save your selected school |
 | Host access to `*.ratemyprofessors.com` | Fetch professor ratings |
-| Content script on supported registration pages (Banner SSB9 `*/StudentRegistrationSsb/*` and PeopleSoft `*COMMUNITY_ACCESS.CLASS_SEARCH.GBL*`) | Read instructor names from the page and inject the rating cards |
+| Content script on supported registration pages (Banner SSB9 `*/StudentRegistrationSsb/*`, PeopleSoft `*COMMUNITY_ACCESS.CLASS_SEARCH.GBL*`, and UO DuckWeb `duckweb.uoregon.edu/duckweb/hwskdhnt.*`) | Read instructor names from the page and inject the rating cards |
 
 ## Source code
 

@@ -36,6 +36,7 @@ WHAT YOU GET
 WORKS ON
 • Ellucian Banner SSB9 (USF, UF, FSU, UCF, FIU, Penn State, Texas A&M, and ~1,400 more)
 • Oracle PeopleSoft Campus Solutions Class Search (NAU, U Houston, FIU, Ohio State, SF State, and hundreds more)
+• University of Oregon DuckWeb class schedule
 • Find Classes search results AND Schedule Details panel on supported systems
 
 PRIVACY
@@ -48,7 +49,7 @@ This is an independent project, not affiliated with any university or with Rate 
 ## Single purpose (required)
 
 ```
-Display Rate My Professors ratings inline on university course-registration pages (Ellucian Banner SSB9, Oracle PeopleSoft Campus Solutions) so students can evaluate instructors during registration without leaving the page.
+Display Rate My Professors ratings inline on university course-registration pages (Ellucian Banner SSB9, Oracle PeopleSoft Campus Solutions, University of Oregon DuckWeb) so students can evaluate instructors during registration without leaving the page.
 ```
 
 ## Permissions justifications
@@ -72,6 +73,10 @@ Banner SSB9 is hosted on different domains at every university (e.g. studentssb9
 ```
 This is Oracle PeopleSoft Campus Solutions' universal public Class Search component path, used by hundreds of universities (NAU, U Houston, Ohio State, SF State, and more), each on its own domain. The wildcard host is required to support users at any institution; the path is narrow enough that the extension only runs on PeopleSoft class-search pages, never on unrelated sites.
 ```
+
+### Content script on `https://duckweb.uoregon.edu/duckweb/hwskdhnt.*`
+
+DuckWeb is the University of Oregon's own class-schedule application (a custom Banner 8 front end on a single, fixed host). The pattern is limited to that host and to the `hwskdhnt.` schedule procedures, so the extension runs only on UO class-schedule pages.
 
 ## Privacy practices declarations
 
