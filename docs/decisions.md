@@ -46,3 +46,15 @@
 - **2026-06-30** — `screenshots/raw/` added to `.gitignore`. Raw listing-asset source captures
   show a logged-in registration page and can carry personal information; only processed,
   PII-free assets under `screenshots/listing/` are committed to this public repo.
+- **2026-10-10** — Added a University of Oregon DuckWeb adapter after a UO tester saw no
+  ratings. DuckWeb (`duckweb.uoregon.edu/duckweb/hwskdhnt.*`) is a custom Banner 8 PL/SQL
+  schedule, not SSB9: no URL pattern matched and instructor cells read `Lastname F` with no
+  `(Primary)` marker. The manifest pattern is pinned to UO's host because the app is UO-specific;
+  a generic Banner 8 `bwckschd` adapter needs its own fixture and is not implied by this one.
+- **2026-10-10** — `RMP.processInstructorElement` takes an optional pre-resolved `courseInfo`.
+  DuckWeb renders every course in one table, so the shared ancestor walker always found the
+  first course on the page; the adapter now reads the nearest preceding course-header row.
+- **2026-10-10** — Removed the USF fallback school ID. With no school selected the badge says
+  "Choose your school in the Professor Ratings extension popup, then refresh" and no RMP
+  request is made. The fallback showed students elsewhere another university's professors
+  matched by last name and initial, which is worse than showing nothing.
