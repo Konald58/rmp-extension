@@ -46,7 +46,12 @@
     const promise = chrome.runtime
       .sendMessage({ type: "rmp:search", lastName, firstInitial, subject, firstName })
       .then((resp) => {
-        if (resp?.noSchool) return RMP.NO_SCHOOL;
+        if (resp?.noSchool) {
+          // Not cached: once the user picks a school, names that arrive via
+          // AJAX afterwards must resolve normally.
+          profCache.delete(key);
+          return RMP.NO_SCHOOL;
+        }
         if (resp?.error) {
           console.error("[RMP] background error:", resp.error);
           return null;
@@ -342,9 +347,13 @@
     if (!data || data.noSchool) {
       const empty = document.createElement("span");
       empty.className = "rmp-empty";
-      empty.textContent = data?.noSchool
-        ? "Choose your school in the Professor Ratings extension popup, then refresh"
-        : "No RMP data";
+      // Keep the no-school text short: instructor cells are often nowrap, so a
+      // long label would stretch the column. The full hint lives in the tooltip.
+      empty.textContent = data?.noSchool ? "Choose school in popup" : "No RMP data";
+      if (data?.noSchool) {
+        empty.title =
+          "Click the Professor Ratings extension icon, search for your school, then refresh this page.";
+      }
       wrap.appendChild(empty);
       element.appendChild(wrap);
       return;

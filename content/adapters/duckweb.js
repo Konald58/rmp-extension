@@ -13,13 +13,17 @@
 
 (function () {
   const DW_PLACEHOLDER_RE = /^(staff|tba|tbd|to\s*be\s*announced)$/i;
-  // "Lastname F", "Armenta Vega A", "Sheldon-Young P", "O'Brien K".
-  const DW_NAME_RE = /^([A-Za-zÀ-ÿ'\-]+(?:[ \-][A-Za-zÀ-ÿ'\-]+)*)\s+([A-Za-z])\.?$/;
+  // "Lastname F", "Armenta Vega A", "Sheldon-Young P", "O'Brien K", "St. John M",
+  // "Smith J A" (first initial J, trailing middle initial ignored). Name parts
+  // need 2+ chars so a bare initial is never absorbed into the last name, and
+  // the part class excludes the separators so the regex cannot backtrack.
+  const DW_NAME_RE =
+    /^([A-Za-zÀ-ÿ'.]{2,}(?:[ \-][A-Za-zÀ-ÿ'.]{2,})*)\s+([A-Za-zÀ-ÿ])\.?(?:\s+[A-Za-zÀ-ÿ]\.?)?$/;
   const DW_COURSE_RE = /^\s*([A-Z]{2,4})\s+(\d{3}[A-Z]?)\b/;
 
   function parseDuckWebName(text) {
     if (!text) return null;
-    const trimmed = text.replace(/ /g, " ").trim().replace(/\s+/g, " ");
+    const trimmed = text.trim().replace(/\s+/g, " ");
     if (!trimmed || DW_PLACEHOLDER_RE.test(trimmed)) return null;
     const m = trimmed.match(DW_NAME_RE);
     if (!m) return null;
@@ -38,53 +42,73 @@
     return /\/duckweb\/hwskdhnt\./i.test(loc.href);
   }
 
-  // Walk backwards over sibling rows to the nearest course header
-  // ("CS 102  Fnd of Comp Security"). Returns { subject, courseCode } or null.
-  function duckWebCourseInfo(row) {
-    let r = row.previousElementSibling;
-    for (let depth = 0; r && depth < 60; depth++, r = r.previousElementSibling) {
-      const first = r.firstElementChild;
-      if (!first) continue;
-      const m = (first.textContent || "").replace(/ /g, " ").match(DW_COURSE_RE);
-      if (m) return { subject: m[1], courseCode: `${m[1]}${m[2]}` };
-    }
-    return null;
-  }
-
   function cellsOf(row) {
     return Array.from(row.children).filter((c) => /^T[DH]$/.test(c.tagName));
   }
 
-  // Yields { cell, row } for every instructor cell on the page.
+  function courseOf(cells) {
+    const m = cells[0] && (cells[0].textContent || "").match(DW_COURSE_RE);
+    return m ? { subject: m[1], courseCode: `${m[1]}${m[2]}` } : null;
+  }
+
+  // One pass over every row of every results table. Yields
+  // { cell, row, courseInfo } for each instructor cell. Handles:
+  //   - the header row ("Instructor" cell) that fixes the column index,
+  //   - full data rows (same cell count as the header),
+  //   - short continuation rows: a second instructor or meeting sits in its
+  //     own <tr> while CRN/Avail/Max/Time carry rowspan=2, so the row has
+  //     fewer cells. The instructor cell is then found by the header cell's
+  //     width attribute, falling back to a name-shaped cell.
+  //   - course headers ("CS 102  Fnd of Comp Security") that set the course
+  //     for the rows that follow. One table holds every course on the page,
+  //     so this cannot come from an ancestor walk.
   function findInstructorCells() {
     const found = [];
-    const tables = document.querySelectorAll("table.datadisplaytable");
-    for (const table of tables) {
-      // Direct rows only: nested tables (Grading Options) are separate tables.
-      const rows = Array.from(table.querySelectorAll(":scope > tbody > tr, :scope > tr"));
+    for (const table of document.querySelectorAll("table.datadisplaytable")) {
       let instrIdx = -1;
       let headerCount = 0;
-      for (const row of rows) {
+      let instrWidth = null;
+      let courseInfo = null;
+      for (const row of Array.from(table.rows)) {
+        if (row.closest("table") !== table) continue; // row of a nested table
         const cells = cellsOf(row);
+        if (!cells.length) continue;
+
+        const course = courseOf(cells);
+        if (course) {
+          courseInfo = course;
+          continue;
+        }
         const hdr = cells.findIndex((c) => (c.textContent || "").trim() === "Instructor");
         if (hdr !== -1) {
           instrIdx = hdr;
           headerCount = cells.length;
+          instrWidth = cells[hdr].getAttribute("width");
           continue;
         }
-        if (instrIdx === -1 || cells.length !== headerCount) continue;
-        found.push({ cell: cells[instrIdx], row });
+        if (instrIdx === -1) continue;
+
+        let cell = null;
+        if (cells.length === headerCount) {
+          cell = cells[instrIdx];
+        } else if (cells.length < headerCount) {
+          cell =
+            (instrWidth && cells.find((c) => c.getAttribute("width") === instrWidth)) ||
+            cells.find((c) => DW_NAME_RE.test((c.textContent || "").trim())) ||
+            null;
+        }
+        if (cell) found.push({ cell, row, courseInfo });
       }
     }
     return found;
   }
 
   function duckWebScan(RMP) {
-    for (const { cell, row } of findInstructorCells()) {
+    for (const { cell, courseInfo } of findInstructorCells()) {
       if (cell.hasAttribute(RMP.BADGE_ATTR)) continue;
       const parsed = parseDuckWebName(cell.textContent);
       if (!parsed) continue;
-      RMP.processInstructorElement(cell, parsed, duckWebCourseInfo(row));
+      RMP.processInstructorElement(cell, parsed, courseInfo);
     }
   }
 
@@ -114,6 +138,6 @@
   }
 
   if (typeof module !== "undefined" && module.exports) {
-    module.exports = { parseDuckWebName, duckWebMatches, duckWebCourseInfo, findInstructorCells };
+    module.exports = { parseDuckWebName, duckWebMatches, findInstructorCells };
   }
 })();

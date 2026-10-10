@@ -68,6 +68,9 @@ describe("DuckWeb adapter full flow (UO fixture)", () => {
 
   test("badges injected into instructor cells", () => {
     expect(document.querySelectorAll(".rmp-container").length).toBeGreaterThan(80);
+    // Continuation row (rowspan co-instructor) gets its own badge.
+    const reasoner = [...document.querySelectorAll("td")].find((td) => /^Reasoner K/.test(td.textContent.trim()));
+    expect(reasoner.querySelector(".rmp-container")).not.toBeNull();
   });
 
   test("search carries the subject resolved from the course header row", () => {
@@ -103,10 +106,21 @@ describe("no school selected", () => {
     await runAdapter();
   });
 
-  test("every instructor cell shows the choose-your-school badge and no rating card", () => {
+  test("every instructor cell shows a short choose-school badge with the hint in the tooltip", () => {
     const empties = [...document.querySelectorAll(".rmp-empty")];
     expect(empties.length).toBeGreaterThan(80);
-    for (const e of empties) expect(e.textContent).toMatch(/Choose your school/);
+    for (const e of empties) {
+      expect(e.textContent).toBe("Choose school in popup");
+      expect(e.title).toMatch(/search for your school/);
+    }
     expect(document.querySelectorAll(".rmp-card").length).toBe(0);
+  });
+
+  test("a no-school answer is not cached, so the next scan re-asks the worker", async () => {
+    const before = chrome.runtime.sendMessage.mock.calls.length;
+    const result = await window.RMP.searchProfessor("Carrere", "D", "CS");
+    expect(result).toBe(window.RMP.NO_SCHOOL);
+    await window.RMP.searchProfessor("Carrere", "D", "CS");
+    expect(chrome.runtime.sendMessage.mock.calls.length).toBe(before + 2);
   });
 });

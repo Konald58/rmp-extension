@@ -16,8 +16,11 @@ const HEADERS = {
 // no default: falling back to one school showed students elsewhere another
 // university's professors matched by last name and initial.
 async function getSchoolGraphqlId() {
-  const data = await chrome.storage.sync.get("schoolGraphqlId");
-  return data.schoolGraphqlId || null;
+  const data = await chrome.storage.sync.get(["schoolGraphqlId", "schoolId"]);
+  if (data.schoolGraphqlId) return data.schoolGraphqlId;
+  // Pre-1.1 installs stored only the numeric id.
+  if (data.schoolId && /^\d+$/.test(String(data.schoolId))) return btoa(`School-${data.schoolId}`);
+  return null;
 }
 
 function professorUrl(id) {
