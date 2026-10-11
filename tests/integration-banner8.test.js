@@ -55,8 +55,29 @@ describe("Banner 8 adapter full flow (UO MATH fixture)", () => {
     for (let i = 0; i < 5; i++) await tick();
   });
 
-  test("badges injected into every Instructors cell with a real name", () => {
-    expect(document.querySelectorAll(".rmp-container").length).toBeGreaterThan(15);
+  test("exactly one badge per Instructors cell, none on placeholders", () => {
+    // Instructor cells only: leaf cells (the section body <td> wraps the whole meeting table).
+    const cells = [...document.querySelectorAll("table.datadisplaytable td")].filter(
+      (td) => /\(\s*P\s*\)/.test(td.textContent) && !td.querySelector("table")
+    );
+    expect(cells.length).toBeGreaterThan(15);
+    for (const td of cells) expect(td.querySelectorAll(".rmp-container").length).toBe(1);
+    expect(document.querySelectorAll(".rmp-container").length).toBe(cells.length);
+  });
+
+  test("a section title without a course code sends no subject (no guess from the walker)", async () => {
+    document.body.insertAdjacentHTML(
+      "afterbegin",
+      '<div>CS 102 lives in an ancestor</div><table class="datadisplaytable"><tr><th class="ddtitle">Mystery - no code</th></tr>' +
+        '<tr><td class="dddefault"><table class="datadisplaytable"><caption>Scheduled Meeting Times</caption>' +
+        '<tr><th class="ddheader">Instructors</th></tr><tr><td class="dddefault">Zed Nobody (P)</td></tr></table></td></tr></table>'
+    );
+    // The adapter re-scans 150 ms after a DOM mutation.
+    await new Promise((r) => setTimeout(r, 250));
+    for (let i = 0; i < 5; i++) await tick();
+    const call = chrome.runtime.sendMessage.mock.calls.map((c) => c[0]).find((m) => m.lastName === "Nobody");
+    expect(call).toBeDefined();
+    expect(call.subject).toBeUndefined();
   });
 
   test("search carries firstName, initial and the MATH subject", () => {

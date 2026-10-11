@@ -79,7 +79,7 @@ styles.css                 cards, popover, dark mode
 
 ```bash
 npm install
-npm test        # Jest + jsdom: 90 tests
+npm test        # Jest + jsdom: 95 tests
 npm run lint    # ESLint
 ```
 

@@ -22,6 +22,7 @@ module.exports = [
         console: "readonly",
         fetch: "readonly",
         URLSearchParams: "readonly",
+        URL: "readonly",
         MutationObserver: "readonly",
         NodeFilter: "readonly",
         Node: "readonly",

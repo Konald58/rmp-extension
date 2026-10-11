@@ -19,7 +19,7 @@ names only verified schools; do not reintroduce "~1,400 universities" style reac
 
 ```bash
 npm install     # dev deps only: eslint, jest, jest-environment-jsdom
-npm test        # jest — 90 tests across name-parser, peoplesoft, banner8, duckweb, scoring, integration
+npm test        # jest — 95 tests across name-parser, peoplesoft, banner8, duckweb, scoring, integration
 npm run lint    # eslint . --no-warn-ignored
 ```
 

@@ -25,7 +25,7 @@ Workday Student and custom registration portals are planned but not started.
   and the personal-website project entry. README rewritten as the portfolio page.
 - 2.1.0 also removes the silent USF fallback: with no school selected the badge now says
   "Choose your school in the Professor Ratings extension popup, then refresh".
-- 90/90 Jest tests, ESLint clean. `rmp-extension-v2.1.0.zip` built at the repo root.
+- 95/95 Jest tests, ESLint clean. `rmp-extension-v2.1.0.zip` built at the repo root.
 - CHANGELOG, README (store link, test count, DuckWeb row), PRIVACY.md and STORE_LISTING.md
   (new content-script pattern plus justification) are updated.
 

@@ -104,6 +104,7 @@
   }
 
   function duckWebScan(RMP) {
+    if (!chrome?.runtime?.id) return; // orphaned after an extension reload
     for (const { cell, courseInfo } of findInstructorCells()) {
       if (cell.hasAttribute(RMP.BADGE_ATTR)) continue;
       const parsed = parseDuckWebName(cell.textContent);
