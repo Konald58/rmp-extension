@@ -12,34 +12,31 @@ pages. Supports Ellucian Banner SSB9 (~1,400 universities) and Oracle PeopleSoft
 Solutions Class Search (hundreds more, e.g. NAU, U Houston, FIU, Ohio State, SF State).
 Workday Student and custom registration portals are planned but not started.
 
-## Where it stands (2026-10-10)
+## Where it stands (2026-10-10 21:00)
 
-- **Live on the Chrome Web Store** at 2.0.0 (extension ID `fddicmacgfogicmodgojnmgenlepeejb`).
-- **2.1.0 built on local `main`, not yet uploaded.** A friend at the University of Oregon saw no
-  ratings. UO runs Banner 8 (DuckWeb), which the extension never supported: only Banner 9 SSB
-  URLs matched. 2.1.0 adds a generic **Banner 8 classic self-service adapter**
-  (`content/adapters/banner8.js`: Class Schedule Listing, Detailed Class Information, Look Up
-  Classes) built from a real UO schedule capture, plus a **UO DuckWeb schedule adapter**
-  (`content/adapters/duckweb.js`) for UO's custom public schedule, verified in the browser.
-- **Reach claims cut to verified schools** (USF, UO, NAU) across README, store listing, manifest
-  and the personal-website project entry. README rewritten as the portfolio page.
-- 2.1.0 also removes the silent USF fallback: with no school selected the badge now says
-  "Choose your school in the Professor Ratings extension popup, then refresh".
-- 95/95 Jest tests, ESLint clean. `rmp-extension-v2.1.0.zip` built at the repo root.
-- CHANGELOG, README (store link, test count, DuckWeb row), PRIVACY.md and STORE_LISTING.md
-  (new content-script pattern plus justification) are updated.
+- **2.1.0 pushed and tagged** (`v2.1.0`, GitHub release with the zip attached). Store upload
+  still pending: it needs Kon's Google re-verification in the dashboard tab.
+- 2.1.0 adds a generic **Banner 8 classic self-service adapter** (Class Schedule Listing,
+  Detailed Class Information, Look Up Classes) and a **UO DuckWeb schedule adapter**, after a
+  friend at the University of Oregon (a Banner 8 school) saw no ratings. Both built from real
+  UO captures and rendered in the browser on those pages. Look Up Classes (logged in) is
+  covered by a synthetic test only.
+- The silent USF fallback is gone: no school picked means a "Choose school in popup" badge.
+- **Public copy names only verified schools**: USF (Banner 9), UO (Banner 8, DuckWeb), NAU
+  (PeopleSoft). The "~1,400 universities" claim is gone everywhere, including the personal
+  website blurb. README rewritten as the portfolio page.
+- 95/95 Jest tests, ESLint clean, CI green. Three fresh-context reviews, all findings fixed.
+- Pre-public-release gates passed (secrets, privacy URL 200, contact alias, assets, versions).
 
 ## Next up
 
-- Upload `rmp-extension-v2.1.0.zip` to the Web Store dashboard and paste the updated listing
-  copy (WORKS ON section) and the Banner 8 + DuckWeb host justifications from
-  `STORE_LISTING.md`. New content-script patterns will trigger a review.
-- Ask the UO friend to re-test once 2.1.0 is live (pick "University of Oregon" in the popup
-  first). Banner 8 "Look Up Classes" (logged in) is covered by a synthetic test only; his run is
-  the first live check of that page.
-- Push `feat/duckweb-adapter`, merge to `main`, tag `v2.1.0`.
-- Workday Student adapter (Phase 3) still needs a real class-search HTML fixture.
-- Custom-frontend-wrapper adapters (Phase 4) not started.
+- **Kon:** re-verify Google in the Web Store dashboard tab. Then upload
+  `rmp-extension-v2.1.0.zip`, paste the WORKS ON block, short description, single purpose and
+  the two new host justifications from `STORE_LISTING.md`, submit for review.
+- After approval: UO friend retests with "University of Oregon" picked (first live check of
+  Look Up Classes). Fix from the popup report if it misses.
+- Workday Student adapter still needs a real class-search capture.
+- LinkedIn launch post (copy final in the vault since July).
 
 ## Open questions
 
